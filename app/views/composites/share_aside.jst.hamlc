@@ -1,0 +1,7 @@
+%ul.poised
+  %li.anchor= @headline
+  %ul.custom-composites.poised.list-group
+  %li.share-form
+    %form.poised
+      %input.poised{ type: 'text', readonly: 'readonly' }
+      %button.button.poised.copy

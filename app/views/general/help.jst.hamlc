@@ -1,0 +1,7 @@
+%header
+  %nav.left
+    .back.icon
+  %h2= t('help.title')
+.toast
+  .text= t('help.messages.rendering')
+%article.active.scroll

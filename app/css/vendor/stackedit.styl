@@ -1,0 +1,140 @@
+stackedit()
+  $title-base-size = 10px;
+
+  .container
+    margin-bottom: 180px;
+
+  a code
+    color: inherit;
+
+  h1 { font-size: floor($title-base-size * 2.60); }
+  h2 { font-size: floor($title-base-size * 2.15); }
+  h3 { font-size: ceil($title-base-size * 1.70); }
+  h4 { font-size: ceil($title-base-size * 1.25); }
+  h5 { font-size:  $title-base-size; }
+  h6 { font-size: ceil($title-base-size * 0.85); }
+
+  h1 {
+    margin: 10px 0 40px;
+  }
+
+  h2 {
+    margin: 50px 0 30px;
+  }
+
+  h3 {
+    margin: 35px 0 20px;
+  }
+
+  h4, h5, h6 {
+    margin: 25px 0 15px;
+  }
+
+  p,
+  pre,
+  pre.prettyprint,
+  blockquote {
+    margin: 0 0 15px;
+  }
+
+  hr {
+    margin: 30px 0;
+  }
+
+  code, pre {
+    font-family: Menlo, Consolas, "Courier New", monospace;
+    font-size: 12px !important;
+  }
+
+  pre, pre.prettyprint {
+    border: 0 solid $pre-border-color;
+      border-left: 10px solid $pre-border-color;
+    border-radius: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 10px 15px;
+    code {
+        background-color: transparent !important;
+    }
+  }
+
+  /* Definition list */
+  dt,dd {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  dd {
+    margin-left: 40px;
+  }
+
+  /* Table style */
+  table {
+    margin-bottom: 20px;
+  }
+
+  table th,table td {
+    padding: 8px;
+    line-height: 20px;
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid #dddddd;
+  }
+
+  table th {
+    font-weight: bold;
+  }
+
+  table thead th {
+    vertical-align: bottom;
+  }
+
+  table caption+thead tr:first-child th,table caption+thead tr:first-child td,table colgroup+thead tr:first-child th,table colgroup+thead tr:first-child td,table thead:first-child tr:first-child th,table thead:first-child tr:first-child td
+    border-top: 0;
+
+  table tbody+tbody {
+    border-top: 2px solid #dddddd;
+  }
+
+  blockquote {
+    border-left-width: 10px;
+    background-color: $blockquote-bg;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 15px 20px;
+    p {
+        margin-bottom: 15px;
+    }
+
+    ul:last-child,
+    ol:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  ul,ol {
+    margin-bottom: 15px;
+    ul,ol {
+      margin-bottom: 15px;
+    }
+  }
+
+  .toc ul {
+    list-style-type: none;
+    margin-bottom: 5px;
+    padding-left: 40px;
+  }
+
+  .toc > ul {
+    padding-left: 0;
+  }
+
+  .footnote {
+    vertical-align: top;
+      position: relative;
+      top: -0.5em;
+      font-size: 0.8em;
+  }
+
+  p img
+    max-width 100%

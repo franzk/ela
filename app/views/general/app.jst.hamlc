@@ -1,0 +1,42 @@
+%section.app.active
+  %header
+    %nav
+      .overview.icon
+    %h2
+      - if @relatedApps.length > 0
+        .subapps.poised.select
+          %label= t("#{@path.replace(/\//g, '.')}.shortTitle")
+          %ul.options
+            - for relatedApp in @relatedApps
+              %li.option{ data-path: relatedApp.path }= t("#{relatedApp.path.replace(/\//g, '.')}.shortTitle")
+      - else
+        %label= t("#{@name}.shortTitle")
+    %nav
+      - for iconAsideName in @iconAsideNames
+        %div{ class: "#{iconAsideName} aside icon", data-toggle-aside: iconAsideName }>
+      .menu
+        .icon.context
+        %ul.entries
+          - for contextAside in @contextAsides
+            %li{ data-toggle-aside: contextAside.name }= contextAside.label
+          %li.share-link= t('contextMenu.share')
+          %li.share-form.no-link.hidden
+            %form.poised
+              %input.poised{ type: 'text', readonly: 'readonly' }
+              %button.button.poised.copy
+          - if @hasHelpText
+            %li.help= t('contextMenu.help')
+  %article.graph.active
+    - if @legendView
+      .legend
+    - if @graphOverlayView
+      .graph-overlay-wrapper
+        .graph-overlay
+    - if @graphView
+      .graph
+    - if @rangeHandlerView
+      .range-handler
+  %a{ href: ELA.settings.upstream.url, target: '_blank' }
+    %img.logo{ src: 'images/logo.png' }
+  - if @useHeadup
+    %aside.right.headup

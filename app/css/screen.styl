@@ -1,0 +1,425 @@
+// ELA specific
+$range-handler-width = 59px
+
+// Remember that this color should be set in CurveGraph aswell
+// to resemble the fillColor of the range indicator triangles:
+$legend-background = #f2f2f2
+
+@import "poised"
+@import "vendor/stackedit"
+
+sub
+  relative 0.5em  // vertical-align approach affects line height
+  font-size 0.7em
+  margin-left 3px
+
+sup
+  relative -0.5em  // vertical-align approach affects line height
+  font-size 0.7em
+  margin-left 3px
+
+#app
+  absolute 0 0 0 0
+  overflow hidden
+
+#help article
+  overflow scroll
+  -webkit-overflow-scrolling touch
+  padding 10px
+  font-size 80%
+  stackedit()
+
+#overview
+  $margin = 18px
+  $tile-size = 200px
+  $tile-spacing = 8px
+  $tile-image-max-height = 45%
+  $tile-image-top = 37.5%
+
+  ul
+    margin 0
+
+    li.search-box
+      margin $margin
+    li.anchor
+      margin 0 $margin
+      + li.anchor
+      &.collapsed
+        margin-bottom $margin
+
+  article > ul
+    .list-group
+      clearfix()
+      margin ($margin - $tile-spacing/2)
+
+    .tile
+      position relative
+      width 50%
+      height $tile-size
+      max-width $tile-size
+      float left
+      padding ($tile-spacing/2)
+      cursor pointer
+      border 0
+      display inline-block
+
+      .wrapper
+        width 100%
+        height 100%
+        background-color #eeeeee
+
+        img
+          absolute $tile-image-top auto auto 50%
+          transform translateX(-50%) translateY(-50%)
+          max-width 70%
+          max-height $tile-image-max-height
+
+        span.title
+          absolute none 0 ((100% - ($tile-image-top + $tile-image-max-height/2))/2) 0
+          text-align center
+          font-size 0.7em
+          line-height 1.2em
+          padding 0 $tile-spacing $tile-spacing $tile-spacing
+          transform translateY(50%)
+
+  .hint
+    display none
+    margin $margin
+    color lighten($foreground, 30%)
+
+    &:before
+      font-family FontAwesome
+      content "\f05a"
+      margin-right 0.4em
+
+li.share-form
+  form
+    background-color #eaeaea
+    display flex
+
+  input[type=text]
+    width auto // 100% would take the whole <li>
+    flex 1
+
+  button
+    &:before
+      font-family FontAwesome
+
+    &.copy:before
+      content "\f0ea"
+    &.success:before
+      content "\f00c"
+    &.failure:before
+      content "\f00d"
+
+article.graph
+  display flex
+  flex-direction column
+
+  div.legend
+    z-layer 'section', 'legend'
+    font-size .75em
+    line-height 1.2em
+    background $legend-background
+    opacity .8
+    touch-action auto
+
+    .values-at-range
+      font-size 0.9em
+      text-align left
+
+      .line-type
+        position relative
+        top -0.2em
+        height 0
+        display inline-block
+        width 20px
+        border-radius 2px
+        margin-right 10px
+
+        &.solid
+          border 1px solid $foreground
+        &.dashed
+          border 1px dashed $foreground
+
+      .range
+        color #999999
+
+      .label
+        font-weight 500
+
+      .curves
+        display table
+        margin 0 auto
+
+        .curve
+          display table-row
+
+          .line, .line-label
+            display table-cell
+            text-align left
+
+          .line canvas
+            display inline
+            vertical-align bottom
+            margin-right 0.5em
+
+      .col
+        display table-cell
+        width 1%
+        white-space nowrap
+        padding 8px 10px 4px 10px
+        text-align center
+        border-bottom 4px solid transparent
+
+        &.values
+          cursor pointer
+
+        &.active
+          background rgba(#fff, 60%)
+
+    &.legend-simple
+      border-bottom 1px solid #ccc
+      absolute 0
+      width 100%
+
+      .curve
+        display inline-block
+        white-space nowrap
+        padding 7px 10px
+
+        .line
+          border 2px solid
+          border-radius 2px
+          width 20px
+          height 0
+          display inline-block
+          relative -0.2em
+          margin-right 0.5em
+
+        &.original .line
+          border-color #a00
+
+        &.alias .line
+          border-color #00f
+
+  div.graph
+    z-layer 'section', 'graph'
+    flex 1
+    overflow hidden
+
+  div.graph-overlay-wrapper
+    height 0
+    font-size .75em
+    z-index 125
+
+    .graph-overlay
+      padding 10px
+      background-color rgba(255, 255, 255, 0.8)
+
+  div.range-handler
+    text-align center
+    cursor pointer
+    background $legend-background
+    padding 14px 5px
+
+    &.orientation-y
+      absolute 0 none 0 0
+      width $range-handler-width
+
+      span.hint
+        absolute 50% none none 50%
+        transform translateX(-50%) translateY(-50%) rotate(-90deg)
+        width 500px // ugly, but no alternative
+
+// vertical range slider and large, non-transparent legend with values
+#international-standard-atmosphere article.graph div.graph
+  margin-left $range-handler-width
+
+// Some space for the delete button
+#composites
+  aside.parameters > ul > li > label
+    margin-right 45px
+
+aside
+  &.hidden
+    opacity 0 !important
+
+  &.parameters .description
+    padding 1em
+    display table
+
+    .icon
+      display table-cell
+      width 1px
+
+    .text
+      display table-cell
+      padding-left 0.66em
+
+  &.airplanes
+  &.composites
+    li.item
+      padding 0
+      white-space no-wrap
+
+      label.item
+        padding $list-item-padding
+        div
+          font-size 0.85em
+          line-height 1.2em
+          &.name
+            font-weight 400
+
+  &.curves
+    $color-span-width = 30px
+    li.item
+      padding 0
+      height $list-item-height + 1px
+
+      label.item
+        margin 0
+        height $list-item-height + 1px
+
+        .color
+          display inline-block
+          width $color-span-width
+          height $list-item-height
+          background: #ccc
+          border-left 1px solid $list-item-border
+          border-right 1px solid $list-item-border
+
+        .name
+          vertical-center absolute
+          left $color-span-width + 10px
+          font-size 1.2em
+
+      label.checkbox
+        float right
+        margin 3px
+
+    li.anchor
+      padding 4px
+      height auto
+
+    .hint
+      margin: 0 18px 18px 18px
+      text-align center
+
+  &.headup
+    z-layer 'section', 'headup'
+    absolute auto none 0 none
+    background-color rgba(#ffffff, 0.8)
+    opacity 1
+    transform translateY(100%)
+    transition opacity .2s ease-in-out
+
+    &.right
+      transform translateY(100%)
+
+    &.active
+      transform translateY(0)
+
+section.subapp-container
+  &> section
+    transform translateX(0)
+    transition none
+    z-index 5
+    transform-origin 50% 10%
+    opacity 0
+    transform scale(0.75)
+    transition visibility 0s linear 200ms, opacity 0s linear 200ms, transform 0s linear 200ms
+
+    &.active
+      visibility visible
+      transition opacity 200ms ease-out, transform 200ms ease-out
+      opacity 1
+      transform scale(1)
+      z-index 10
+
+.range-handler
+aside.curves
+  > .hint
+    color lighten($foreground, 30%)
+
+    &:before
+      font-family FontAwesome
+      content "\f05a"
+      margin-right 0.4em
+
+img.logo
+  absolute none 0 0 none
+  height $range-handler-width
+  z-layer 'section', 'graph'
+
+  @media $media-lt-phone
+    display none
+
+span.mark
+  background-color yellow
+
+.poised .list-group
+  margin 0
+
+.poised
+  .list-group + .anchor
+    margin-top 18px
+
+.icon.scene:before
+  content: "\f03e"
+
+.icon.composites:before
+  content "\f279"
+
+.icon.calculator:before
+  content: "\f1ec"
+
+.icon.warning:before
+  content: "\f071"
+
+// on iPhones, avoid collision between slider and Safari back-swipes
+@media $media-lt-phone
+  html.ios .poised.slider
+    margin-left 20px
+
+@keyframes tada {
+  0%, 50%, 100% {
+    transform: scale3d(1, 1, 1);
+  }
+
+  5%, 10% {
+    transform: scale3d(.8, .8, .8) rotate3d(0, 0, 1, -7deg);
+  }
+
+  15%, 25%, 35%, 45% {
+    transform: scale3d(1.3, 1.3, 1.3) rotate3d(0, 0, 1, 7deg);
+  }
+
+  20%, 30%, 40% {
+    transform: scale3d(1.3, 1.3, 1.3) rotate3d(0, 0, 1, -7deg);
+  }
+}
+
+#thrust-matching .graph-overlay
+  .parameter-warnings
+    display table
+    width 100%
+
+  .icon
+    display table-cell
+    vertical-align middle
+    color red
+    font-size 2em
+    width 1px // stretches automatically to minimal size
+    padding 0 6px
+    animation tada 2s infinite
+
+  .right
+    display table-cell
+    vertical-align middle
+    padding-left 10px
+    line-height 1.1em
+
+  .headline
+    font-weight bolder
+    padding-bottom 5px

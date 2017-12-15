@@ -1,0 +1,6 @@
+.poised.tabs
+  %header
+    - for tab in @tabs
+      .tab{ data-tab-view: tab.name }= tab.label
+  - for tab in @tabs
+    .tab-content.scroll-y{ data-tab: tab.name }

@@ -1,0 +1,4 @@
+.wrapper
+  .icon
+    %img{ src: "images/icons/#{@name}.svg" }
+  %span.title!= t("#{@name}.title")

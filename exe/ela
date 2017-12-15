@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+require 'guard'
+require 'guard/commander'
+guardfile_path = File.expand_path('../support/project/Guardfile', __dir__)
+
+require File.expand_path('../lib/ela/jasmine', __dir__)
+
+case ARGV[0]
+when 'serve'
+  Guard.start(guardfile: guardfile_path)
+
+when 'jasmine'
+  ELA::Jasmine.start_server
+
+when 'test'
+  Guard.setup(guardfile: guardfile_path)
+  Guard.run_all(group: :build)
+  exit(1) unless ELA::Jasmine.run
+
+when 'build'
+  APP_FILE  = File.expand_path('../lib/ela/server', __dir__)
+  APP_CLASS = 'ELA::Server'
+  require 'rake'
+  require 'sinatra/assetpack/rake'
+  require 'fileutils'
+
+  ENV['RACK_ENV'] = 'production'
+
+  require File.expand_path('../lib/ela', __dir__)
+
+  FileUtils.rm_rf('public')
+  FileUtils.mkdir('public')
+  File.open('public/index.html', 'w+') do |f|
+    f << app.assets.send(:build_get, '/').body
+  end
+  Rake::Task['assetpack:precompile:packages'].invoke
+  FileUtils.cp_r(File.expand_path('../app/fonts', __dir__), 'public/ela')
+  FileUtils.cp_r('images', 'public')
+  FileUtils.mv('public/images/favicons/favicon.ico', 'public')
+  FileUtils.mv('public/images/favicons/favicon.png', 'public')
+  FileUtils.mkdir('public/images/icons')
+  Dir['apps/*/icon.svg'].each do |icon_path|
+    app = icon_path.match(%r{\Aapps/(.*)/icon\.svg\z})[1]
+    FileUtils.cp(icon_path, "public/images/icons/#{app}.svg")
+  end
+  ELA.write_settings_yml('public/settings.default.yml')
+  ELA.write_labels_yml('public/labels.default.yml')
+  FileUtils.mkdir_p('public/ela/js/vendor')
+  FileUtils.cp_r(File.expand_path('../app/js/vendor/mathjax', __dir__), 'public/ela/js/vendor')
+
+when 'doc'
+  codo_path = File.expand_path('../node_modules/codo/bin/codo', __dir__)
+  system("#{codo_path} --readme README.md --private ./apps")
+
+else
+  puts <<EOF
+Usage: ela [serve|jasmine|test|build|doc]
+EOF
+end

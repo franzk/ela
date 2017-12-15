@@ -1,0 +1,7 @@
+%header
+  %h2= t('overview.title')
+  %nav.right
+    .help.icon
+%article.active.scroll-y
+  %div.hint#chrome-android-flag-hint= t('overview.chrome-android-flag-hint')
+  %ul
