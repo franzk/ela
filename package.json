@@ -1,0 +1,11 @@
+{
+  "name": "ela",
+  "repository": "velaluqa/ela.js",
+  "license": "MIT",
+  "devDependencies": {
+    "codo": "^2.1.2",
+    "nib": "^1.1.2",
+    "poised": "^0.2.6",
+    "stylus": "^0.54.4"
+  }
+}

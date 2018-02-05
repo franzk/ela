@@ -1,0 +1,5 @@
+/spec/app_js
+/spec/javascripts/**/*.js
+/node_modules
+/dist
+/ela-*.gem

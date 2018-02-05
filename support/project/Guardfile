@@ -1,0 +1,64 @@
+require 'guard/compat/plugin'
+
+require 'ela'
+
+module ::Guard
+  class Yml < Plugin
+    def initialize(options = {})
+      opts = options.dup
+      @name = opts.delete(:name)
+      @to = opts.delete(:to)
+      super(opts)
+    end
+
+    def run_all(paths = [])
+      ELA.write_yml(@name, @to)
+    end
+    alias_method :start, :run_all
+    alias_method :run_on_modifications, :run_all
+    alias_method :run_on_additions, :run_all
+    alias_method :run_on_removals, :run_all
+  end
+end
+
+group :development do
+  guard 'livereload' do
+    watch(/^apps\/.+/)
+    watch(/^images\/.+/)
+    watch(/^spec\/.+\.js$/)
+  end
+
+  guard :rack, config: File.expand_path('../server.ru', __dir__)
+
+  guard :process, name: 'Jasmine', command: "bundle exec ela jasmine"
+end
+
+group :build do
+  options = {
+    input: 'apps',
+    output: 'spec/app_js',
+    all_on_start: true,
+    patterns: [/^apps\/(.*\.coffee)$/]
+  }
+  guard 'coffeescript', options do
+    options[:patterns].each { |pattern| watch(pattern) }
+  end
+
+  options = {
+    input: 'spec/coffeescripts',
+    output: 'spec/javascripts',
+    all_on_start: true,
+    patterns: [/^spec\/coffeescripts\/(.+\.coffee)$/]
+  }
+  guard 'coffeescript', options do
+    options[:patterns].each { |pattern| watch(pattern) }
+  end
+
+  guard :yml, name: :settings, to: 'spec/app_js/settings.default.yml' do
+    watch(/app\/js\/lib\/apps\/.*settings.yml/)
+  end
+
+  guard :yml, name: :labels, to: 'spec/app_js/labels.default.yml' do
+    watch(/app\/js\/lib\/apps\/.*settings.yml/)
+  end
+end

@@ -1,0 +1,5 @@
+- if @selected
+  %span.color{ style: "background: #{@hsl}" }
+- else
+  %span.color
+%span.name!= @label

@@ -1,0 +1,205 @@
+//////////////////////////////////////////////////////////////////////
+
+The following files are licensed under the SIL OFL 1.1
+(http://scripts.sil.org/OFL):
+
+- app/fonts/fontawesome-webfont.eot
+- app/fonts/fontawesome-webfont.svg
+- app/fonts/fontawesome-webfont.ttf
+- app/fonts/fontawesome-webfont.woff
+
+//////////////////////////////////////////////////////////////////////
+
+The following files are licensed under the Apache License 2.0
+(http://www.apache.org/licenses/LICENSE-2.0):
+
+- app/fonts/Roboto-Italic-webfont.eot
+- app/fonts/Roboto-Italic-webfont.svg
+- app/fonts/Roboto-Italic-webfont.ttf
+- app/fonts/Roboto-Italic-webfont.woff
+- app/fonts/Roboto-LightItalic-webfont.eot
+- app/fonts/Roboto-LightItalic-webfont.svg
+- app/fonts/Roboto-LightItalic-webfont.ttf
+- app/fonts/Roboto-LightItalic-webfont.woff
+- app/fonts/Roboto-Light-webfont.eot
+- app/fonts/Roboto-Light-webfont.svg
+- app/fonts/Roboto-Light-webfont.ttf
+- app/fonts/Roboto-Light-webfont.woff
+- app/fonts/Roboto-MediumItalic-webfont.eot
+- app/fonts/Roboto-MediumItalic-webfont.svg
+- app/fonts/Roboto-MediumItalic-webfont.ttf
+- app/fonts/Roboto-MediumItalic-webfont.woff
+- app/fonts/Roboto-Medium-webfont.eot
+- app/fonts/Roboto-Medium-webfont.svg
+- app/fonts/Roboto-Medium-webfont.ttf
+- app/fonts/Roboto-Medium-webfont.woff
+- app/fonts/Roboto-Regular-webfont.eot
+- app/fonts/Roboto-Regular-webfont.svg
+- app/fonts/Roboto-Regular-webfont.ttf
+- app/fonts/Roboto-Regular-webfont.woff
+- app/fonts/Roboto-ThinItalic-webfont.eot
+- app/fonts/Roboto-ThinItalic-webfont.svg
+- app/fonts/Roboto-ThinItalic-webfont.ttf
+- app/fonts/Roboto-ThinItalic-webfont.woff
+- app/fonts/Roboto-Thin-webfont.eot
+- app/fonts/Roboto-Thin-webfont.svg
+- app/fonts/Roboto-Thin-webfont.ttf
+- app/fonts/Roboto-Thin-webfont.woff
+- app/js/vendor/mathjax/jax/input/TeX/config.js
+- app/js/vendor/mathjax/jax/input/TeX/jax.js
+- app/js/vendor/mathjax/jax/element/mml/jax.js
+- app/js/vendor/mathjax/jax/element/mml/optable/GreekAndCoptic.js
+- app/js/vendor/mathjax/jax/element/mml/optable/BasicLatin.js
+- app/js/vendor/mathjax/jax/element/mml/optable/MiscTechnical.js
+- app/js/vendor/mathjax/jax/element/mml/optable/CombDiactForSymbols.js
+- app/js/vendor/mathjax/jax/element/mml/optable/Dingbats.js
+- app/js/vendor/mathjax/jax/element/mml/optable/CombDiacritMarks.js
+- app/js/vendor/mathjax/jax/element/mml/optable/MiscMathSymbolsB.js
+- app/js/vendor/mathjax/jax/element/mml/optable/LetterlikeSymbols.js
+- app/js/vendor/mathjax/jax/element/mml/optable/SupplementalArrowsA.js
+- app/js/vendor/mathjax/jax/element/mml/optable/GeometricShapes.js
+- app/js/vendor/mathjax/jax/element/mml/optable/MathOperators.js
+- app/js/vendor/mathjax/jax/element/mml/optable/Latin1Supplement.js
+- app/js/vendor/mathjax/jax/element/mml/optable/GeneralPunctuation.js
+- app/js/vendor/mathjax/jax/element/mml/optable/MiscMathSymbolsA.js
+- app/js/vendor/mathjax/jax/element/mml/optable/SpacingModLetters.js
+- app/js/vendor/mathjax/jax/element/mml/optable/MiscSymbolsAndArrows.js
+- app/js/vendor/mathjax/jax/element/mml/optable/SupplementalArrowsB.js
+- app/js/vendor/mathjax/jax/element/mml/optable/SuppMathOperators.js
+- app/js/vendor/mathjax/jax/element/mml/optable/Arrows.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/config.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/autoload/annotation-xml.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/autoload/ms.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/autoload/mmultiscripts.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/autoload/maction.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/autoload/multiline.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/autoload/menclose.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/autoload/mglyph.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/autoload/mtable.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/jax.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/fontdata-extra.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/Caligraphic-Bold.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/SansSerif-Italic.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/Fraktur-Bold.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/Script-Regular.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/Math-BoldItalic.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/Fraktur-Regular.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/Typewriter-Regular.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/SansSerif-Bold.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/fontdata.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/Main-Bold.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/SansSerif-Regular.js
+- app/js/vendor/mathjax/jax/output/CommonHTML/fonts/TeX/AMS-Regular.js
+- app/js/vendor/mathjax/MathJax.js
+- app/js/vendor/mathjax/extensions/tex2jax.js
+- app/js/vendor/mathjax/extensions/MathEvents.js
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_AMS-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Main-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Fraktur-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Math-BoldItalic.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Size2-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_SansSerif-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Script-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Caligraphic-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Typewriter-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Size4-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_SansSerif-Italic.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Math-Italic.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_WinIE6-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Fraktur-Bold.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_SansSerif-Bold.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Size3-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Caligraphic-Bold.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Main-Italic.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Math-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Size1-Regular.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/eot/MathJax_Main-Bold.eot
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Math-BoldItalic.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Bold.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Italic.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Script-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Bold.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Typewriter-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_AMS-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Math-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Bold.woff
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Caligraphic-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Main-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Math-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Fraktur-Bold.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Size2-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Caligraphic-Bold.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Typewriter-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_SansSerif-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Main-Bold.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Math-BoldItalic.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Math-Italic.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_AMS-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_WinChrome-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Size1-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_SansSerif-Italic.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Size3-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Main-Italic.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_SansSerif-Bold.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Fraktur-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Size4-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/svg/MathJax_Script-Regular.svg
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_SansSerif-Italic.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Math-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size4-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_WinIE6-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Fraktur-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_SansSerif-Bold.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Main-Bold.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size3-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size1-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Bold.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_SansSerif-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Fraktur-Bold.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Script-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Size2-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_WinChrome-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_AMS-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Typewriter-Regular.otf
+- app/js/vendor/mathjax/fonts/HTML-CSS/TeX/otf/MathJax_Math-BoldItalic.otf
+
+//////////////////////////////////////////////////////////////////////
+
+All other files are licensed under the MIT License (MIT):
+
+Copyright (c) 2017 velaluqa GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+//////////////////////////////////////////////////////////////////////

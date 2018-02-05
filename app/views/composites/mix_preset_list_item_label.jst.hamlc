@@ -1,0 +1,8 @@
+.poised.selectbox
+  %select.poised
+    - @composite.collection.each (composite) ->
+      %option{ value: composite.id }= composite.get('name')
+.poised.selectbox
+  %select.poised
+    - @ruleOfMixture.collection.each (ruleOfMixture) ->
+      %option{ value: ruleOfMixture.id }= ruleOfMixture.get('name')
