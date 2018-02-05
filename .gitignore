@@ -1,6 +1,3 @@
-/.sass-cache
-/.ruby-gemset
-/.ruby-version
 /spec/app_js
 /spec/javascripts/**/*.js
 /node_modules
