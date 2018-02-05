@@ -9,7 +9,7 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
   # Typically in a subclass we override the list of asides. This may
   # be a list of classes inheriting from ELA.Views.BaseAside or an
   # object with `name` and `klass` attributes.
-  asideViews: []
+  aside: []
 
   legendView: null
 
@@ -59,8 +59,8 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
       @on 'controlLiveChangeStart', @liveChangeStart
       @on 'controlLiveChangeEnd', @liveChangeEnd
 
-    for asideView in @asideViews
-      asideView.link ?= 'icon'
+    for aside in @asides
+      aside.link ?= 'icon'
 
     if @graphView?
       GraphParams = @graphView.toFunction()['Params']
@@ -117,16 +117,16 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
 
   iconAsideNames: ->
     @_iconAsideNames ?= do =>
-      _.compact(_.map(@asideViews, (asideView) ->
-        asideView.name if asideView.link is 'icon'
+      _.compact(_.map(@asides, (aside) ->
+        aside.name if aside.link is 'icon'
       ))
 
   contextAsides: ->
     @_contextAsideNames ?= do =>
-      _.compact(_.map(@asideViews, (asideView) =>
-        if asideView.link is 'contextMenu'
-          name: asideView.name
-          label: @loadLocale("contextMenu.#{asideView.name}")
+      _.compact(_.map(@asides, (aside) =>
+        if aside.link is 'contextMenu'
+          name: aside.name
+          label: @loadLocale("contextMenu.#{aside.name}")
       ))
 
   backToOverview: =>
@@ -194,7 +194,7 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
     @$shareCopyButton = @$shareForm.find('button')
 
     @$app = @$('section.app')
-    for aside in @asideViews
+    for aside in @asides
       AsideView = aside.view.toFunction()
       view = @subviews[aside.name] = new AsideView
         model: @model
