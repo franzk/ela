@@ -46,5 +46,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "jasmine", "~> 2.9", ">= 2.9.0"
   spec.add_dependency "rake", "~> 10.5", ">= 10.5.0"
   spec.add_dependency "uglifier", "~> 4.1", ">= 4.1.5"
-  spec.add_dependency "andand"
+  spec.add_dependency "andand", "~> 1.3", ">= 1.3.3"
 end
