@@ -122,6 +122,11 @@ module ELA
          status(404)
        end
      end
+
+     def page_title
+       ELA.page_title
+     end
+
    end
 
    ENV['NODE_PATH'] = [

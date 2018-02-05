@@ -1,3 +1,6 @@
+require 'yaml'
+require 'andand'
+
 module ELA
   module Utils
     def write_settings_yml(path)
@@ -114,6 +117,15 @@ EOF
       end
 
       s + app_settings
+    end
+
+    def page_title
+      global_settings_path = File.join(Dir.pwd, 'settings.yml')
+      if File.exists?(global_settings_path)
+        yml = YAML.load(File.read(global_settings_path))
+        yml_title = yml['page'].andand['title']
+      end
+      yml_title or 'E-Learning Apps'
     end
   end
 end
