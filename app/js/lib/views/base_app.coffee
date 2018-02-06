@@ -30,7 +30,6 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
   legendValueAtRangeAxis: null
   legendValueAtRangeAttribute: null
 
-  useHeadup: false
 
   events:
     'tap header .overview.icon': 'backToOverview'
@@ -55,9 +54,8 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
   initialize: ->
     @listenTo @model, 'change:currentAside', @toggleAside
     @listenTo @model, 'change:showHelp', @renderHelp
-    if @useHeadup
-      @on 'controlLiveChangeStart', @liveChangeStart
-      @on 'controlLiveChangeEnd', @liveChangeEnd
+    @on 'controlLiveChangeStart', @liveChangeStart
+    @on 'controlLiveChangeEnd', @liveChangeEnd
 
     for aside in @asides
       aside.link ?= 'icon'
@@ -185,7 +183,6 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
       graphOverlayView: @graphOverlayView?
       graphView: @graphView?
       rangeHandlerView: @rangeHandlerView?
-      useHeadup: @useHeadup
       relatedApps: @relatedApps()
       currentPath: @model.path
     @$shareLink = @$('li.share-link')
@@ -239,7 +236,7 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
         localePrefix: @localePrefix
       view.render()
 
-    if @useHeadup and not @subviews.headup?
+    unless @subviews.headup?
       @$headup = @$('aside.headup')
       @subviews.headup = new ELA.Views.Headup
         el: @$headup

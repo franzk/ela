@@ -38,5 +38,4 @@
       .range-handler
   %a{ href: ELA.settings.upstream.url, target: '_blank' }
     %img.logo{ src: 'images/logo.png' }
-  - if @useHeadup
-    %aside.right.headup
+  %aside.right.headup
