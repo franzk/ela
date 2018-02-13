@@ -1,5 +1,5 @@
 // ELA specific
-$range-handler-width = 59px
+$axis-handler-size = 59px
 
 // Remember that this color should be set in CurveGraph aswell
 // to resemble the fillColor of the range indicator triangles:
@@ -112,9 +112,22 @@ li.share-form
     &.failure:before
       content "\f00d"
 
-article.graph
+article.viewport
   display flex
-  flex-direction column
+
+  .view
+    flex 1
+    display flex
+    flex-direction column
+    border-right 1px solid #bbb
+    overflow hidden
+
+    &:last-child
+      border-right: none
+
+    .horizontal-wrapper
+      display flex
+      flex 1
 
   div.legend
     z-layer 'section', 'legend'
@@ -180,8 +193,6 @@ article.graph
 
     &.legend-simple
       border-bottom 1px solid #ccc
-      absolute 0
-      width 100%
 
       .curve
         display inline-block
@@ -217,15 +228,15 @@ article.graph
       padding 10px
       background-color rgba(255, 255, 255, 0.8)
 
-  div.range-handler
+  div.axis-handler
     text-align center
     cursor pointer
     background $legend-background
     padding 14px 5px
 
-    &.orientation-y
-      absolute 0 none 0 0
-      width $range-handler-width
+    &.axis-handler-left
+      width $axis-handler-size
+      position relative
 
       span.hint
         absolute 50% none none 50%
@@ -234,7 +245,7 @@ article.graph
 
 // vertical range slider and large, non-transparent legend with values
 #international-standard-atmosphere article.graph div.graph
-  margin-left $range-handler-width
+  margin-left $axis-handler-size
 
 // Some space for the delete button
 #composites
@@ -349,7 +360,7 @@ aside.curves
 
 img.logo
   absolute none 0 0 none
-  height $range-handler-width
+  height $axis-handler-size
   z-layer 'section', 'graph'
 
   @media $media-lt-phone

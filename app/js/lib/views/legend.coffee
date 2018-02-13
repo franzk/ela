@@ -1,5 +1,7 @@
 ELA.Views ?= {}
 class ELA.Views.Legend extends Backbone.Poised.View
+  className: 'legend'
+
   valueCurveColumnTemplate: _.template '
 <div class="values col<%= activeClass %>"
      data-index="<%= curveIndex %>"
@@ -29,6 +31,7 @@ class ELA.Views.Legend extends Backbone.Poised.View
     @useValueAtRange = options.useValueAtRange
     @valueAtRangeAxis = options.valueAtRangeAxis or 'x'
     @valueAtRangeAttribute = options.valueAtRangeAttribute or 'valueAtRange'
+    @_curves = options.curves
 
     @model.on "change:#{@valueAtRangeAttribute}", @render
 
@@ -115,6 +118,14 @@ class ELA.Views.Legend extends Backbone.Poised.View
   calculatorFunction: (curve) ->
     "#{curve.get('function')}_value"
 
+  curves: =>
+    curves = @model.curves.whereInHistory()
+    if @_curves
+      _.filter curves, (curve) =>
+        @_curves.indexOf(curve.get('function')) >= 0
+    else
+      curves
+
   render: =>
     if @useValueAtRange
       @range = @model.get(@valueAtRangeAttribute)
@@ -125,7 +136,7 @@ class ELA.Views.Legend extends Backbone.Poised.View
 
         @renderValueHeaderColumn()
 
-        _.each @model.curves.whereInHistory(), @renderValueCurveColumn
+        _.each(@curves(), @renderValueCurveColumn)
 
         # Replace keeping horizontal scroll position
         scrollLeft = @$el.find('.scroll-x').scrollLeft()
@@ -134,5 +145,5 @@ class ELA.Views.Legend extends Backbone.Poised.View
       this
     else
       @$el.empty().addClass('legend-simple')
-      _.each @model.curves.whereInHistory(), @renderSimpleCurveColumn
+      _.each(@curves(), @renderSimpleCurveColumn)
       this

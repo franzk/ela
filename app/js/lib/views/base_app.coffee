@@ -9,27 +9,10 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
   # Typically in a subclass we override the list of asides. This may
   # be a list of classes inheriting from ELA.Views.BaseAside or an
   # object with `name` and `klass` attributes.
-  aside: []
+  asides: []
 
-  legendView: null
-
-  graphView: null
-  graphOverlayView: null
-  graphDefaults: {}
-
-  rangeHandlerView: null
-
-  # TODO: Rename valueAtRange name pattern to something like selectValue
-  # TODO: use correct attribute in every app instead of generic valueAtRange
-  valueAtRange: null
-  valueAtRangeAxis: 'x'
-  valueAtRangeAttribute: 'valueAtRange'
-  valueAtRangePrecision: null
-
-  legendValueAtRange: null
-  legendValueAtRangeAxis: null
-  legendValueAtRangeAttribute: null
-
+  # Typically in a subclass we override the list of views.
+  views: []
 
   events:
     'tap header .overview.icon': 'backToOverview'
@@ -60,9 +43,7 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
     for aside in @asides
       aside.link ?= 'icon'
 
-    if @graphView?
-      GraphParams = @graphView.toFunction()['Params']
-      @model.displayParams = new GraphParams if GraphParams?
+    @model.displayParams ?= {}
 
   viewSubappOptions: =>
     @$('.subapps.select').toggleClass('view')
@@ -179,10 +160,6 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
       hasHelpText: @model.hasHelpText
       iconAsideNames: @iconAsideNames()
       contextAsides: @contextAsides()
-      legendView: @legendView?
-      graphOverlayView: @graphOverlayView?
-      graphView: @graphView?
-      rangeHandlerView: @rangeHandlerView?
       relatedApps: @relatedApps()
       currentPath: @model.path
     @$shareLink = @$('li.share-link')
@@ -200,70 +177,19 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
         localePrefix: @localePrefix
       @$app.append(view.render().el)
 
-    if @legendView? and not @subviews.legend
-      @$legend = @$('article .legend')
-      LegendView = @legendView.toFunction()
-      @subviews.legend = view = new LegendView
-        model: @model
-        parentView: this
-        el: @$legend
-        useValueAtRange: @legendValueAtRange or @valueAtRange or @rangeHandlerView?
-        valueAtRangeAxis: @legendValueAtRangeAxis or @valueAtRangeAxis
-        valueAtRangeAttribute: @legendValueAtRangeAttribute or @valueAtRangeAttribute
-        localePrefix: @localePrefix
-      view.render()
-
-    if @graphOverlayView? and not @subviews.graphOverlayView
-      @$graphOverlay = @$('article .graph-overlay')
-      GraphOverlayView = @graphOverlayView.toFunction()
-      @subviews.graphOverlayView = view = new GraphOverlayView
-        model: @model
-        parentView: this
-        el: @$graphOverlay
-        localPrefix: @localePrefix
-      view.render()
-
-    if @rangeHandlerView? and not @subviews.rangeHandler?
-      @$rangeHandler = @$('article .range-handler')
-      RangeHandlerView = @rangeHandlerView.toFunction()
-      @subviews.rangeHandler = view = new RangeHandlerView
-        model: @model
-        parentView: this
-        el: @$rangeHandler
-        axis: @valueAtRangeAxis
-        attribute: @valueAtRangeAttribute
-        precision: @valueAtRangePrecision
-        localePrefix: @localePrefix
-      view.render()
-
     unless @subviews.headup?
       @$headup = @$('aside.headup')
       @subviews.headup = new ELA.Views.Headup
         el: @$headup
         localePrefix: @localePrefix
 
-    delay =>
-      if @graphView? and not @subviews.graph
-        @$graph = @$('article .graph')
-        GraphView = @graphView.toFunction()
-        @subviews.graph = view = new GraphView
-          model: @model
-          parentView: this
-          params: @model.displayParams
-          defaults: _.defaults
-            # Taken from ELA.Views.Canvas::readCanvasResolution
-            width: @$graph[0].clientWidth
-            height: @$graph[0].clientHeight
-            valueAtRangeAxis: @valueAtRangeAxis
-            valueAtRangeAttribute: @valueAtRangeAttribute
-          , @graphDefaults
-          localePrefix: @localePrefix
-        @$graph.html(view.render().el)
-
-        # If the legend uses the value at range feature, it's height
-        # may change with updated calculators
-        if @subviews.legend?.useValueAtRange
-          @listenTo(@model, 'change:calculators', view.readCanvasResolution)
+    unless @subviews.viewport
+      view = @subviews.viewport = new ELA.Views.Viewport
+        model: @model
+        parentView: this
+        views: @views
+        localePrefix: @localePrefix
+      @$('.viewport').replaceWith(view.render().el)
 
     @renderHelp()
     @toggleAside(@model, @model.get('currentAside'))
