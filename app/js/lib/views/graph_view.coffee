@@ -14,8 +14,10 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
     unless options.legend is false
       if _.isObject(options.legend) and options.legend.view?
         @LegendView = options.legend.view.toFunction()
+        @legendValueAttribute = options.legend.valueAttribute
       else
         @LegendView = ELA.Views.Legend
+      @legendValueAttribute ?= options.graph?.axes?.x?.attribute
 
     if options.graphOverlay?.view?
       @GraphOverlayView = options.graphOverlay.view.toFunction()
@@ -39,6 +41,7 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         model: @model
         parentView: this
         localePrefix: @localePrefix
+        valueAttribute: @legendValueAttribute
         curves: @curves
       @$el.append(view.render().el)
 

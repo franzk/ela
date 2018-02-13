@@ -28,39 +28,28 @@ class ELA.Views.Legend extends Backbone.Poised.View
       @bindCalculatorEvents()
       @render()
     @bindCalculatorEvents()
-    @useValueAtRange = options.useValueAtRange
-    @valueAtRangeAxis = options.valueAtRangeAxis or 'x'
-    @valueAtRangeAttribute = options.valueAtRangeAttribute or 'valueAtRange'
+    @valueAttribute = options.valueAttribute if options.valueAttribute
     @_curves = options.curves
 
-    @model.on "change:#{@valueAtRangeAttribute}", @render
+    if @valueAttribute
+      @listenTo(@model, "change:#{@valueAttribute}", @render)
 
   events:
     'click .values.col': 'selectCurveForAxisLabeling'
 
   selectCurveForAxisLabeling: (e) ->
     index = parseInt($(e.currentTarget).data('index'))
-    @model.set
-      axisLabelingForCurve: @model.curves.at(index)
+    @model.set(axisLabelingForCurve: @model.curves.at(index))
 
   bindCalculatorEvents: ->
     @stopListening()
     for calc in @model.get('calculators')
       for curve in @model.curves.models
-        @listenTo calc, "change:#{curve.get('function')}", @render
+        @listenTo(calc, "change:#{curve.get('function')}", @render)
 
   # Stub: Renders the header column.
   # Override in your custom Legend view.
   renderValueHeaderColumn: =>
-
-  # Returns the curves axis label according to the value of
-  # `@valueAtRangeAxis`.
-  #
-  # @return String The label for the specific axis.
-  curveLabel: (curve) =>
-    switch @valueAtRangeAxis
-      when 'x' then @Present(curve).fullYAxisLabel()
-      when 'y' then @Present(curve).fullXAxisLabel()
 
   # Renders a simple curve column with values at range.
   # This renders the `#valueCurveColumnTemplate`.
@@ -77,7 +66,7 @@ class ELA.Views.Legend extends Backbone.Poised.View
       curveIndex: @model.curves.indexOf(curve)
       strokeColor: curve.strokeStyle()
       borderStyle: "border-color: #{curve.strokeStyle()}" if isActive
-      label: @curveLabel(curve)
+      label: @Present(curve).fullLabel()
 
     for calc, i in @calcs
       val = calc[func](@range)
@@ -106,7 +95,7 @@ class ELA.Views.Legend extends Backbone.Poised.View
     return unless curve.showInLegend()
     @$el.append $ @simpleCurveColumnTemplate
       strokeColor: curve.strokeStyle()
-      label: @Present(curve).fullLabel()
+      label: @Present(curve).label()
 
   # Used to determine which function to display.
   # For interpolated Graphs you typically append `_value` to the curve
@@ -127,8 +116,8 @@ class ELA.Views.Legend extends Backbone.Poised.View
       curves
 
   render: =>
-    if @useValueAtRange
-      @range = @model.get(@valueAtRangeAttribute)
+    if @valueAttribute
+      @range = @model.get(@valueAttribute)
       if @range?
         @labelingCurve = @model.get('axisLabelingForCurve')
         @calcs = @model.get('calculators')
@@ -142,8 +131,7 @@ class ELA.Views.Legend extends Backbone.Poised.View
         scrollLeft = @$el.find('.scroll-x').scrollLeft()
         @$el.html(@$wrapper)
         @$el.find('.scroll-x').scrollLeft(scrollLeft)
-      this
     else
       @$el.empty().addClass('legend-simple')
       _.each(@curves(), @renderSimpleCurveColumn)
-      this
+    this
