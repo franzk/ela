@@ -21,11 +21,18 @@ class ELA.Views.Canvas extends Backbone.Poised.View
       @params = options.params
       @params.set(@defaults)
     else
+      @model.displayParams ?= {}
       @params = new @constructor.Params(@defaults)
+      @model.displayParams[options.name] = @params
 
     @setCanvasResolution()
 
-    $(window).resize(@readCanvasResolution)
+    $(window).on('resize', @readCanvasResolution)
+
+    # If the legend uses the value at range feature, it's height
+    # may change with updated calculators
+    @listenTo(@model, 'change:calculators', @readCanvasResolution)
+
     @listenTo(@params, 'change:width change:height', @setCanvasResolution)
 
   remove: ->

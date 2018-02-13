@@ -26,17 +26,7 @@
               %button.button.poised.copy
           - if @hasHelpText
             %li.help= t('contextMenu.help')
-  %article.graph.active
-    - if @legendView
-      .legend
-    - if @graphOverlayView
-      .graph-overlay-wrapper
-        .graph-overlay
-    - if @graphView
-      .graph
-    - if @rangeHandlerView
-      .range-handler
+  .viewport
   %a{ href: ELA.settings.upstream.url, target: '_blank' }
     %img.logo{ src: 'images/logo.png' }
-  - if @useHeadup
-    %aside.right.headup
+  %aside.right.headup

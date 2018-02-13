@@ -14,8 +14,9 @@ class ELA.Views.InterpolatedGraph extends ELA.Views.BaseGraph
       @bindCalculatorEvents()
       @requestRepaint()
 
-    if attr = @params.get('valueAtRangeAttribute')
-      @model.on "change:#{attr}", @requestRepaint
+    for guide in @params.get('guides')
+      @listenTo(@model, "change:#{guide.attribute}", @requestRepaint)
+
     @model.on 'change:axisLabelingForCurve', @requestRepaint
 
   bindCalculatorEvents: ->
@@ -23,14 +24,15 @@ class ELA.Views.InterpolatedGraph extends ELA.Views.BaseGraph
     @stopListening(@model.previous('calculators'))
 
     for calc in @model.get('calculators')
-      for curve in @model.curves.history
+      filteredCurves = @_filteredCurves()
+      for curve in filteredCurves
         @listenTo calc, "change:#{curve.get('function')}", @requestRepaint
 
       @listenTo calc, 'change:maxX change:xRange', @calculateRangeX
       @listenTo calc, 'change:maxY change:yRange', @calculateRangeY
       # TODO: Add dynamic dependencies to calculator, so that we can
       # actually only listen to maxY changes and recalculate ranges.
-      oldestCurve = @model.curves.history[0]
+      oldestCurve = filteredCurves[0]
       if oldestCurve?
         @listenTo calc, "change:#{oldestCurve.get('function')}", @calculateRanges
 
@@ -124,9 +126,18 @@ class ELA.Views.InterpolatedGraph extends ELA.Views.BaseGraph
     else
       @drawSpline(points, tension, closed, xPos, yPos)
 
+  _filteredCurves: ->
+    curves = @model.curves.history
+    if graphCurves = @params.get('curves')
+      _.filter curves, (curve) ->
+        graphCurves.indexOf(curve.get('function')) >= 0
+    else
+      curves
+
   _sortedCurves: ->
-    _.sortBy @model.curves.history, (c) ->
-      c.attributes.zIndex
+    _.sortBy @_filteredCurves(), (curve) ->
+      curve.get('zIndex')
+
 
   beforeRenderCurves: (resultCurves) ->
   afterRenderCurves: (resultCurves) ->
@@ -135,7 +146,6 @@ class ELA.Views.InterpolatedGraph extends ELA.Views.BaseGraph
     resultCurves = []
     for calc, i in @model.get('calculators')
       for curve, j in @_sortedCurves()
-
         func = curve.get('function')
         resultCurves.push
           curve: curve
@@ -219,63 +229,66 @@ class ELA.Views.InterpolatedGraph extends ELA.Views.BaseGraph
       @context.fill()
     @context.closePath()
 
-  renderRangeIndicator: ->
-    if @params.get('valueAtRangeAttribute') and (valueAtPoint = @model.get(@params.get('valueAtRangeAttribute')))?
-      @context.beginPath()
-      @context.setLineDash []
-      @context.strokeStyle = '#999999'
-      @context.lineWidth = 2
+  renderGuide: (guide) ->
+    valueAtPoint = @model.get(guide.attribute)
 
-      # Border below legend
-      @context.moveTo(@width, 0)
-      @context.lineTo(0, 0)
+    @context.beginPath()
+    @context.setLineDash []
+    @context.strokeStyle = '#999999'
+    @context.lineWidth = 2
 
-      if (axis = @params.get('valueAtRangeAxis')) is 'x'
-        # Border next to range handler
-        @context.moveTo(0, @height)
-        @context.lineTo(@width, @height)
-        @context.lineTo(@width, @height-10)
+    # Border below legend
+    @context.moveTo(@width, 0)
+    @context.lineTo(0, 0)
 
-        # Range handler line
-        xPos = @xOrigin + valueAtPoint * @width / @xRange
-        @context.moveTo(xPos, 0)
-        @context.lineTo(xPos, @height)
-      else
-        # Border next to range handler
-        @context.lineTo(0, @height)
+    if guide.orientation is 'vertical'
+      # Border next to range handler
+      @context.moveTo(0, @height)
+      @context.lineTo(@width, @height)
+      @context.lineTo(@width, @height-10)
 
-        # Range handler line
-        yPos = - valueAtPoint * @height / @yRange + @yOrigin
-        @context.moveTo(0, yPos)
-        @context.lineTo(@width, yPos)
-      @context.stroke()
-      @context.closePath()
+      # Range handler line
+      xPos = @xOrigin + valueAtPoint * @width / @xRange
+      @context.moveTo(xPos, 0)
+      @context.lineTo(xPos, @height)
+    else
+      # Border next to range handler
+      @context.lineTo(0, @height)
 
-      @context.beginPath()
-      # The fillStyle of the triangle should match the color of the
-      # background set for the legend and range handler in screen.styl:
-      @context.fillStyle = "#f2f2f2"
-      @context.lineWidth = 1
+      # Range handler line
+      yPos = - valueAtPoint * @height / @yRange + @yOrigin
+      @context.moveTo(0, yPos)
+      @context.lineTo(@width, yPos)
 
-      if axis is 'x'
-        @context.moveTo(xPos + 8, 0)
-        @context.lineTo(xPos, 8)
-        @context.lineTo(xPos - 8, 0)
-        @context.moveTo(xPos - 8, @height)
-        @context.lineTo(xPos, @height - 8)
-        @context.lineTo(xPos + 8, @height)
-      else
-        @context.moveTo(0, yPos - 8)
-        @context.lineTo(8, yPos)
-        @context.lineTo(0, yPos + 8)
-        @context.moveTo(@width, yPos - 8)
-        @context.lineTo(@width - 8, yPos)
-        @context.lineTo(@width, yPos + 8)
-      @context.stroke()
-      @context.fill()
-      @context.closePath()
+    @context.stroke()
+    @context.closePath()
+
+    @context.beginPath()
+    # The fillStyle of the triangle should match the color of the
+    # background set for the legend and range handler in screen.styl:
+    @context.fillStyle = "#f2f2f2"
+    @context.lineWidth = 1
+
+    if guide.orientation is 'vertical'
+      @context.moveTo(xPos + 8, 0)
+      @context.lineTo(xPos, 8)
+      @context.lineTo(xPos - 8, 0)
+      @context.moveTo(xPos - 8, @height)
+      @context.lineTo(xPos, @height - 8)
+      @context.lineTo(xPos + 8, @height)
+    else
+      @context.moveTo(0, yPos - 8)
+      @context.lineTo(8, yPos)
+      @context.lineTo(0, yPos + 8)
+      @context.moveTo(@width, yPos - 8)
+      @context.lineTo(@width - 8, yPos)
+      @context.lineTo(@width, yPos + 8)
+    @context.stroke()
+    @context.fill()
+    @context.closePath()
 
   render: =>
     super
-    @renderRangeIndicator()
+    for guide in @params.get('guides')
+      @renderGuide(guide)
     this
