@@ -20,14 +20,17 @@ class ELA.Views.Legend extends Backbone.Poised.View
   useValueAtRange: false
 
   initialize: (options) ->
-    @model.on 'change:axisLabelingForCurve', @render
-    @model.curves.on 'change:selected', =>
+    @displayParams = options.displayParams
+    @listenTo(@displayParams, 'change:axisLabelingForCurve', @render)
+
+    @listenTo @model, 'change:calculators', =>
       @bindCalculatorEvents()
       @render()
-    @model.on 'change:calculators', =>
-      @bindCalculatorEvents()
-      @render()
+
+    @listenTo(@model.curves, 'change:selected', @render)
+
     @bindCalculatorEvents()
+
     @valueAttribute = options.valueAttribute if options.valueAttribute
     @_curves = options.curves
 
@@ -39,12 +42,12 @@ class ELA.Views.Legend extends Backbone.Poised.View
 
   selectCurveForAxisLabeling: (e) ->
     index = parseInt($(e.currentTarget).data('index'))
-    @model.set(axisLabelingForCurve: @model.curves.at(index))
+    @displayParams.set(axisLabelingForCurve: @model.curves.at(index))
 
   bindCalculatorEvents: ->
-    @stopListening()
+    @stopListening(@model.previous('calculators'))
     for calc in @model.get('calculators')
-      for curve in @model.curves.models
+      for curve in @curves()
         @listenTo(calc, "change:#{curve.get('function')}", @render)
 
   # Stub: Renders the header column.
@@ -119,7 +122,7 @@ class ELA.Views.Legend extends Backbone.Poised.View
     if @valueAttribute
       @range = @model.get(@valueAttribute)
       if @range?
-        @labelingCurve = @model.get('axisLabelingForCurve')
+        @labelingCurve = @displayParams.get('axisLabelingForCurve')
         @calcs = @model.get('calculators')
         @$wrapper = $('<div class="values-at-range scroll-x">')
 

@@ -29,7 +29,12 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
           when 'x' then @bottomAxisHandler = attribute: props.attribute
           when 'y' then @leftAxisHandler = attribute: props.attribute
 
-    @curves = options.graph?.curves?.slice()
+    if options.graph?.curves?
+      @curves = options.graph.curves.slice()
+      @axisLabelingForCurve = @model.curves.find (curve) =>
+        curve.get('function') is @curves[0]
+    else
+      @axisLabelingForCurve = @model.curves.first()
 
     @subviews = {}
 
@@ -43,6 +48,7 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         localePrefix: @localePrefix
         valueAttribute: @legendValueAttribute
         curves: @curves
+        displayParams: @displayParams
       @$el.append(view.render().el)
 
     if @GraphOverlayView?
@@ -98,6 +104,7 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
           height: $graph[0].clientHeight
           guides: guides
           curves: @curves
+          axisLabelingForCurve: @axisLabelingForCurve
         localePrefix: @localePrefix
       $graph.html(view.render().el)
 
