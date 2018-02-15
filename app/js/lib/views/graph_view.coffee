@@ -92,13 +92,12 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         model: @model
         parentView: this
         params: @displayParams
-        defaults: _.defaults
+        defaults:
           # Taken from ELA.Views.Canvas::readCanvasResolution
           width: $graph[0].clientWidth
           height: $graph[0].clientHeight
           guides: guides
           curves: @curves
-        , @graphDefaults
         localePrefix: @localePrefix
       $graph.html(view.render().el)
 
