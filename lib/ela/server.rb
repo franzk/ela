@@ -36,6 +36,7 @@ module ELA
          '/ela/js/vendor/webfontloader-*.js',
          '/ela/js/vendor/modernizr-*.js',
          '/ela/js/vendor/three-*.js',
+         '/ela/js/vendor/Chart-*.js',
          '/ela/js/vendor/jquery-*.js',
          '/ela/js/vendor/hammer-*.js',
          '/ela/js/vendor/underscore-*.js',
