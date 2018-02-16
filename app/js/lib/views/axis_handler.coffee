@@ -23,7 +23,7 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
       when 'bottom' then 'x'
       when 'left' then 'y'
     @attribute = options.attribute
-    @precision = @model.get("#{@attribute}Precision")
+    @precision = ELA.settings[@model.name]?.formFields?[@attribute]?.precision
     @precision ?= options.precision
     @precision ?= 2
 

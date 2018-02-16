@@ -109,19 +109,17 @@ class ELA.Models.Curve extends Backbone.Model
         @loadLocale "curves.#{func}.yAxisLabel", 'curves.yAxisLabel',
           defaultValue: func.toLabel()
 
-    # Returns the y axis unit label.
+    # Returns the unit label for the curve.
     #
-    # With the introduction of distinction between curve specific x
-    # and y axis labeling, this function is deprecated in favor of
-    # `#xAxisUnitLabel` and `#yAxisUnitLabel`.
-    #
-    # @deprecated
-    #
-    # @return String The unit for the y-axis
+    # @return String The unit label
     unitLabel: ->
-      console.log('ELA.Models.Curve.Presenter#unitLabel is deprecated.')
       unit = @model.get('unit')
-      if unit then "[#{unit}]" else ''
+      @_unitLabel ?= do =>
+        func = @model.get('function')
+        l = @loadLocale "curves.#{func}.unitLabel", 'curves.unitLabel',
+          returnNull: true
+        l or @yAxisUnitLabel() or @xAxisUnitLabel()
+
 
     # Returns the x-axis unit label.
     #
@@ -142,18 +140,13 @@ class ELA.Models.Curve extends Backbone.Model
           returnNull: true
 
     # Returns the full label as concatenation of `#label` and
-    # `#unitLabel`. Generally used for curve specific axis labling.
-    #
-    # With the introduction of distinction between curve specific x
-    # and y axis labeling, this function is deprecated in favor of
-    # `#fullXAxisLabel` and `#fullYAxisLabel`.
-    #
-    # @deprecated
+    # `#unitLabel`.
     #
     # @return String The full curve label
     fullLabel: ->
-      console.log('ELA.Models.Curve.Presenter#fullLabel is deprecated.')
-      "#{@label()} #{@unitLabel()}"
+      unit = @unitLabel()
+      unit = if unit? then " [#{unit}]" else ''
+      "#{@label()}#{unit}"
 
     # Returns the full label for the x-axis as concatenation of label
     # and unit label.

@@ -14,8 +14,10 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
     unless options.legend is false
       if _.isObject(options.legend) and options.legend.view?
         @LegendView = options.legend.view.toFunction()
+        @legendValueAttribute = options.legend.valueAttribute
       else
         @LegendView = ELA.Views.Legend
+      @legendValueAttribute ?= options.graph?.axes?.x?.attribute
 
     if options.graphOverlay?.view?
       @GraphOverlayView = options.graphOverlay.view.toFunction()
@@ -27,7 +29,12 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
           when 'x' then @bottomAxisHandler = attribute: props.attribute
           when 'y' then @leftAxisHandler = attribute: props.attribute
 
-    @curves = options.graph?.curves?.slice()
+    if options.graph?.curves?
+      @curves = options.graph.curves.slice()
+      @axisLabelingForCurve = @model.curves.find (curve) =>
+        curve.get('function') is @curves[0]
+    else
+      @axisLabelingForCurve = @model.curves.first()
 
     @subviews = {}
 
@@ -39,7 +46,9 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         model: @model
         parentView: this
         localePrefix: @localePrefix
+        valueAttribute: @legendValueAttribute
         curves: @curves
+        displayParams: @displayParams
       @$el.append(view.render().el)
 
     if @GraphOverlayView?
@@ -89,13 +98,13 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         model: @model
         parentView: this
         params: @displayParams
-        defaults: _.defaults
+        defaults:
           # Taken from ELA.Views.Canvas::readCanvasResolution
           width: $graph[0].clientWidth
           height: $graph[0].clientHeight
           guides: guides
           curves: @curves
-        , @graphDefaults
+          axisLabelingForCurve: @axisLabelingForCurve
         localePrefix: @localePrefix
       $graph.html(view.render().el)
 

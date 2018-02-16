@@ -17,7 +17,7 @@ class ELA.Views.InterpolatedGraph extends ELA.Views.BaseGraph
     for guide in @params.get('guides')
       @listenTo(@model, "change:#{guide.attribute}", @requestRepaint)
 
-    @model.on 'change:axisLabelingForCurve', @requestRepaint
+    @listenTo(@params, 'change:axisLabelingForCurve', @requestRepaint)
 
   bindCalculatorEvents: ->
     # Remove current callbacks, add new ones for each curve
@@ -37,12 +37,12 @@ class ELA.Views.InterpolatedGraph extends ELA.Views.BaseGraph
         @listenTo calc, "change:#{oldestCurve.get('function')}", @calculateRanges
 
   maxRangeX: (func, xScale = @params.get('xScale')) =>
-    func = @model.get('axisLabelingForCurve')?.get('function') unless func?
+    func = @params.get('axisLabelingForCurve')?.get('function') unless func?
     ranges = (calc.xRange(func) for calc in @model.get('calculators'))
     Math.max.apply(Math, _.compact(ranges)) * xScale
 
   maxRangeY: (func, yScale = @params.get('yScale')) =>
-    func = @model.get('axisLabelingForCurve')?.get('function') unless func?
+    func = @params.get('axisLabelingForCurve')?.get('function') unless func?
     ranges = (calc.yRange(func) for calc in @model.get('calculators'))
     Math.max.apply(Math, _.compact(ranges)) * yScale
 
@@ -50,7 +50,7 @@ class ELA.Views.InterpolatedGraph extends ELA.Views.BaseGraph
     @axisLabel(val, stepsize)
 
   yAxisValueLabel: (val, stepsize) ->
-    curve = @model.get('axisLabelingForCurve')
+    curve = @params.get('axisLabelingForCurve')
     if curve?
       curvePresenter = @Present(curve)
       val = curvePresenter.unitValue(val)
@@ -65,7 +65,7 @@ class ELA.Views.InterpolatedGraph extends ELA.Views.BaseGraph
     axisLabelLocale = @params.get("#{axis}AxisLabelLocale")
     return @loadLocale(axisLabelLocale) if axisLabelLocale?
 
-    curve = @model.get('axisLabelingForCurve')
+    curve = @params.get('axisLabelingForCurve')
     if curve?
       return @Present(curve).fullXAxisLabel() if axis is 'x'
       return @Present(curve).fullYAxisLabel() if axis is 'y'
