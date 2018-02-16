@@ -11,6 +11,8 @@ class ELA.Views.ChartJS extends Backbone.Poised.View
       $.extend @chartConfig.options.title,
         fontFamily: 'Roboto'
         fontStyle: '500'
+    $.extend @chartConfig.options,
+      maintainAspectRatio: false
     @dataFunction = options.dataFunction
     @params = options.params
 
