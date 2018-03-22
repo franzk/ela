@@ -106,6 +106,10 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
           curves: @curves
           axisLabelingForCurve: @axisLabelingForCurve
         localePrefix: @localePrefix
+      if @leftAxisHandler?
+        view.$el.on('tap', @subviews.leftAxisHandler.updateValue)
+      if @bottomAxisHandler?
+        view.$el.on('tap', @subviews.bottomAxisHandler.updateValue)
       $graph.html(view.render().el)
 
     this
