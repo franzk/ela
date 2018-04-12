@@ -36,10 +36,10 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
     if @orientation is 'x'
       width = @displayParams.get('width')
       point = (range / width) *
-        (e.gesture.pointers[0].clientX - graphOffset.left - origin)
+        (e.gesture.center.x - graphOffset.left - origin)
     else # @orientation is 'y'
       height = @displayParams.get('height')
-      y = e.gesture.pointers[0].clientY - graphOffset.top
+      y = e.gesture.center.y - graphOffset.top
       y = Math.min(Math.max(y, 0), height)
       point = (range / height) * (origin - y)
 
