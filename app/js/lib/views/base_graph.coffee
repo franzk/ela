@@ -43,6 +43,8 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     xPinchLocked: false
     yPinchLocked: false
     scaleLink: false
+    xAxis: { y: 0 }
+    yAxis: { x: 0 }
 
   initialize: ->
     super
@@ -321,7 +323,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
   renderCurves: ->
     # stub
 
-  renderXAxis: ->
+  renderXAxis: (y) ->
     @context.setLineDash []
     @context.font = @defaultFont
     @context.strokeStyle = "#999999"
@@ -329,29 +331,30 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     @context.lineWidth = 2
 
     @context.beginPath()
-    @context.moveTo(0, @yOrigin)
-    @context.lineTo(@width, @yOrigin)
+    yPos = @yOrigin - y * @height / @yRange
+    @context.moveTo(0, yPos)
+    @context.lineTo(@width, yPos)
 
     unless @params.get('xLabelPosition') is 'none'
       labelY = dashY = 0
       if @params.get('xLabelPosition') is 'bottom'
-        labelY = @yOrigin + 15
-        dashY = @yOrigin + 5
+        labelY = yPos + 15
+        dashY = yPos + 5
       else
-        labelY = @yOrigin - 15
-        dashY = @yOrigin - 5
+        labelY = yPos - 15
+        dashY = yPos - 5
 
       @context.textBaseline = 'middle'
       @context.textAlign = 'center'
 
-      xRange = @maxRangeX() unless xRange?
+      xRange = @maxRangeX()
       xMin = -@xOrigin * xRange / @width
       xMax = (@width - @xOrigin) * xRange / @width
       xStepSize = @roundStepSize(100 * xRange / @width)
       for x in [(xMin - xMin % xStepSize) .. xMax] by xStepSize
         if x <= (0 - xStepSize / 2) or (0 + xStepSize / 2) <= x
           xPos = @xOrigin + x * @width / xRange
-          @context.moveTo(xPos, @yOrigin)
+          @context.moveTo(xPos, yPos)
           @context.lineTo(xPos, dashY)
           @context.fillText("#{@xAxisValueLabel(x, xStepSize)}", xPos, labelY)
 
@@ -361,14 +364,14 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     else
       @xOrigin/2
     xPos = Math.round(xPos) if @context.pixelRatio is 1
-    @context.translate(xPos, @yOrigin + 15)
+    @context.translate(xPos, yPos + 15)
     MarkupText.render(@context, @xAxisLabel(), @defaultFont)
     @context.restore()
 
     @context.stroke()
     @context.closePath()
 
-  renderYAxis: (yRange) ->
+  renderYAxis: (x) ->
     @context.setLineDash []
     @context.font = @defaultFont
     @context.strokeStyle = "#999999"
@@ -376,29 +379,30 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     @context.lineWidth = 2
 
     @context.beginPath()
-    @context.moveTo(@xOrigin, 0)
-    @context.lineTo(@xOrigin, @height)
+    xPos = @xOrigin + x * @width / @xRange
+    @context.moveTo(xPos, 0)
+    @context.lineTo(xPos, @height)
 
     unless @params.get('yLabelPosition') is 'none'
       labelX = dashX = 0
       if @params.get('yLabelPosition') is 'right'
-        labelX = @xOrigin + 10
-        dashX = @xOrigin + 5
+        labelX = xPos + 10
+        dashX = xPos + 5
         @context.textAlign = 'left'
       else
-        labelX = @xOrigin - 10
-        dashX = @xOrigin - 5
+        labelX = xPos - 10
+        dashX = xPos - 5
         @context.textAlign = 'right'
       @context.textBaseline = 'middle'
 
-      yRange = @maxRangeY() unless yRange?
+      yRange = @maxRangeY()
       yMin = -(@height - @yOrigin) * yRange / @height
       yMax = @yOrigin * yRange / @height
       yStepSize = @roundStepSize(100 * yRange / @height)
       for y in [(yMin - yMin % yStepSize) .. yMax] by yStepSize
         if y <= (0 - yStepSize / 2) or y >= (0 + yStepSize / 2)
           yPos = @yOrigin - y * @height / yRange
-          @context.moveTo(@xOrigin, yPos)
+          @context.moveTo(xPos, yPos)
           @context.lineTo(dashX, yPos)
           @context.fillText(@yAxisValueLabel(y, yStepSize), labelX, yPos)
 
@@ -408,7 +412,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     else
       @yOrigin/2
     yPos = Math.round(yPos) if @context.pixelRatio is 1
-    @context.translate(@xOrigin - 15, yPos);
+    @context.translate(xPos - 15, yPos);
     @context.rotate(-Math.PI / 2);
     MarkupText.render(@context, @yAxisLabel(), @defaultFont)
     @context.restore()
@@ -470,8 +474,16 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     @beforeRender()
 
     @renderGrid()
-    @renderXAxis()
-    @renderYAxis()
+    xAxis = @params.get('xAxis')
+    if $.isArray(xAxis.y)
+      @renderXAxis(y) for y in xAxis.y
+    else
+      @renderXAxis(xAxis.y)
+    yAxis = @params.get('yAxis')
+    if $.isArray(yAxis.x)
+      @renderYAxis(x) for x in yAxis.x
+    else
+      @renderYAxis(yAxis.x)
     @renderCurves()
 
     this
