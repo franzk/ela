@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ela (3.0.0)
+    ela (3.2.0)
       andand (~> 1.3, >= 1.3.3)
       bundler (~> 1.13)
       coffee-script (~> 2.4, >= 2.4.1)
