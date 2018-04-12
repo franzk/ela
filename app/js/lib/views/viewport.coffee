@@ -18,11 +18,8 @@ class ELA.Views.Viewport extends Backbone.Poised.View
 
   _style: ->
     'grid-template-areas: "' + @layout.join('" "') + '";' +
-      'grid-auto-columns: ' +
-      Array(@layout[0].split(' ').length).fill('1fr').join(' ') + ';' +
-      'grid-auto-rows: ' +
-      Array(@layout.length).fill('1fr').join(' ') + ';'
-
+      'grid-auto-columns: 1fr;' +
+      'grid-auto-rows: 1fr;'
 
   render: ->
     @$el.empty().attr('style', @_style())
