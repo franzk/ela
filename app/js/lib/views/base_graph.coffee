@@ -344,7 +344,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
       @context.textBaseline = 'middle'
       @context.textAlign = 'center'
 
-      xRange = @maxRangeX() unless xRange?
+      xRange = @maxRangeX()
       xMin = -@xOrigin * xRange / @width
       xMax = (@width - @xOrigin) * xRange / @width
       xStepSize = @roundStepSize(100 * xRange / @width)
@@ -368,7 +368,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     @context.stroke()
     @context.closePath()
 
-  renderYAxis: (yRange) ->
+  renderYAxis: ->
     @context.setLineDash []
     @context.font = @defaultFont
     @context.strokeStyle = "#999999"
@@ -391,7 +391,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
         @context.textAlign = 'right'
       @context.textBaseline = 'middle'
 
-      yRange = @maxRangeY() unless yRange?
+      yRange = @maxRangeY()
       yMin = -(@height - @yOrigin) * yRange / @height
       yMax = @yOrigin * yRange / @height
       yStepSize = @roundStepSize(100 * yRange / @height)

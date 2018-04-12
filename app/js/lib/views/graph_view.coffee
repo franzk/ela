@@ -24,8 +24,7 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
 
     for axis, props of options.graph?.axes
       if props.handler
-        attribute: props.attribute
-        position: switch axis
+        switch axis
           when 'x' then @bottomAxisHandler = attribute: props.attribute
           when 'y' then @leftAxisHandler = attribute: props.attribute
 
