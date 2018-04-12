@@ -188,6 +188,7 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
         model: @model
         parentView: this
         views: @views
+        layout: @layout
         localePrefix: @localePrefix
       @$('.viewport').replaceWith(view.render().el)
 

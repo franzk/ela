@@ -13,14 +13,29 @@ class ELA.Views.Viewport extends Backbone.Poised.View
 
     @subviews = {}
 
+    @layout = options.layout or
+      [ _.map(@views, (view, idx) -> String.fromCharCode(97 + idx)).join(' ') ]
+
+  _style: ->
+    'grid-template-areas: "' + @layout.join('" "') + '";' +
+      'grid-auto-columns: ' +
+      Array(@layout[0].split(' ').length).fill('1fr').join(' ') + ';' +
+      'grid-auto-rows: ' +
+      Array(@layout.length).fill('1fr').join(' ') + ';'
+
+
   render: ->
-    @$el.empty()
-    for view in @views
+    @$el.empty().attr('style', @_style())
+
+    for view, idx in @views
       options = _.extend
         model: @model
         parentView: this
         localePrefix: @localePrefix
+        attributes:
+          style: "grid-area: #{String.fromCharCode(97 + idx)}"
       , view.options
       view = @subviews[view.options.name] ?= new view.View(options)
       @$el.append(view.render().el)
+
     this
