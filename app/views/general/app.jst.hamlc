@@ -2,15 +2,7 @@
   %header
     %nav
       .overview.icon
-    %h2
-      - if @relatedApps.length > 0
-        .subapps.poised.select
-          %label= t("#{@path.replace(/\//g, '.')}.shortTitle")
-          %ul.options
-            - for relatedApp in @relatedApps
-              %li.option{ data-path: relatedApp.path }= t("#{relatedApp.path.replace(/\//g, '.')}.shortTitle")
-      - else
-        %label= t("#{@name}.shortTitle")
+    %h2!= @headlineHtml
     %nav
       - for iconAsideName in @iconAsideNames
         %div{ class: "#{iconAsideName} aside icon", data-toggle-aside: iconAsideName }>

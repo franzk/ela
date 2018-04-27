@@ -13,26 +13,40 @@ class ELA.Views.Viewport extends Backbone.Poised.View
 
     @subviews = {}
 
-    @layout = options.layout or
-      [ _.map(@views, (view, idx) -> String.fromCharCode(97 + idx)).join(' ') ]
+    @layouts = options.layouts or
+      [
+        layout: _.map(@views, (view, idx) ->
+          String.fromCharCode(97 + idx)
+        ).join(' ')
+      ]
+
+    @listenTo(@model, 'change:layout', @render)
+
+  areaLayout: ->
+    '"' + @layouts[@model.get('layout')].layout.join('" "') + '"'
 
   _style: ->
-    'grid-template-areas: "' + @layout.join('" "') + '";' +
+    "grid-template-areas: #{@areaLayout()};" +
       'grid-auto-columns: 1fr;' +
       'grid-auto-rows: 1fr;'
 
   render: ->
+    for view in @views
+      @subviews[view.options.name]?.remove()
+
     @$el.empty().attr('style', @_style())
 
     for view, idx in @views
-      options = _.extend
-        model: @model
-        parentView: this
-        localePrefix: @localePrefix
-        attributes:
-          style: "grid-area: #{String.fromCharCode(97 + idx)}"
-      , view.options
-      view = @subviews[view.options.name] ?= new view.View(options)
-      @$el.append(view.render().el)
+      area = String.fromCharCode(97 + idx)
+      if @areaLayout().indexOf(area) > -1
+        options = _.extend
+          model: @model
+          parentView: this
+          localePrefix: @localePrefix
+          attributes:
+            style: "grid-area: #{area}"
+        , view.options
+        view = @subviews[view.options.name] = new view.View(options)
+        @$el.append(view.render().el)
 
     this

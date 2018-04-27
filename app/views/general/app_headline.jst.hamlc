@@ -1,0 +1,10 @@
+- if @relatedApps?.length > 0 or @availableLayouts.length > 1
+  .subviews.poised.select
+    %label= t("#{@path.replace(/\//g, '.')}.shortTitle")
+    %ul.options
+      - for relatedApp in @relatedApps
+        %li.option.subapp{ data-path: relatedApp.path }= t("#{relatedApp.path.replace(/\//g, '.')}.shortTitle")
+      - for layout in @availableLayouts
+        %li.option.layout{ data-path: layout }= t("#{@name}.layouts.#{layout}.title")
+- else
+  %label= t("#{@name}.shortTitle")

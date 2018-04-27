@@ -10,11 +10,12 @@ class ELA.Models.BaseApp extends ELA.Models.BaseAppModel
     @handlePath()
 
   handlePath: =>
-    path = @get('path')?[0]
-    if path is 'help'
-      @set showHelp: true
-    else
-      @set showHelp: false
+    path = @get('path')
+
+    @set(showHelp: _.last(path) is 'help')
+
+    first = _.first(path)
+    @set(layout: first) if first? and first isnt 'help'
 
   helpTextName: =>
     @path.replace('/', '_')

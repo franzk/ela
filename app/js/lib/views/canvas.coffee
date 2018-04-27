@@ -36,9 +36,10 @@ class ELA.Views.Canvas extends Backbone.Poised.View
     # Do not take scale into account here, otherwise
     # non-active subapps will get initialized with wrong size
     # because they have a css scale of 0.75
-    @params.set
-      width: $parent[0].clientWidth
-      height: $parent[0].clientHeight
+    if $parent.length > 0
+      @params.set
+        width: $parent[0].clientWidth
+        height: $parent[0].clientHeight
 
   setCanvasResolution: ->
     width = @params.get('width')
