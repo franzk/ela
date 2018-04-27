@@ -1,6 +1,7 @@
 ELA.Views ?= {}
 class ELA.Views.BaseApp extends Backbone.Poised.View
   template: JST['general/app']
+  headlineTemplate: JST['general/app_headline']
 
   id: -> @model.name.toDash()
   tagName: 'section'
@@ -22,11 +23,12 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
     'tap header .share-form button': 'copyShareLink'
     'submit header .share-form form': (e) -> e.preventDefault()
     'tap header *[data-toggle-aside]': 'setCurrentAside'
-    'tap header .poised.subapps.select': 'viewSubappOptions'
-    'tap header .poised.subapps.select .option': 'openSubapp'
+    'tap header .poised.subviews.select': 'viewSubviewOptions'
+    'tap header .poised.subviews.select .option.subapp': 'openSubapp'
+    'tap header .poised.subviews.select .option.layout': 'openLayout'
     'tap header .context.icon': 'toggleContextMenu'
     'tap article.graph:has(~ aside.active)': 'hideAsides'
-    'tap section:has(.subapps.select.view)': 'hideSubappOptions'
+    'tap section:has(.subviews.select.view)': 'hideSubappOptions'
     'tap section:has(.menu.view)': 'hideMenus'
 
   hammerjs: true
@@ -43,13 +45,28 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
     for aside in @asides
       aside.link ?= 'icon'
 
+    $(window).on('resize', @renderHeadlineHtml)
+    $(window).on('resize', @checkLayout)
+    @checkLayout()
+
     @model.displayParams ?= {}
 
-  viewSubappOptions: =>
-    @$('.subapps.select').toggleClass('view')
+  remove: ->
+    super
+    $(window).off('resize', @renderHeadlineHtml)
+    $(window).off('resize', @checkLayout)
 
-  hideSubappOptions: =>
-    @$('.subapps.select').removeClass('view')
+  checkLayout: =>
+    availableLayouts = @availableLayouts()
+    if availableLayouts.indexOf(@model.get('layout')) < 0
+      ELA.router.navigate "app/#{@model.path}/#{availableLayouts[0]}",
+        trigger: true
+
+  viewSubviewOptions: =>
+    @$('.subviews.select').toggleClass('view')
+
+  hideSubviewOptions: =>
+    @$('.subviews.select').removeClass('view')
 
   toggleContextMenu: =>
     @$('.menu:has(.icon.context)').toggleClass('view')
@@ -64,6 +81,11 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
   openSubapp: (e) =>
     $target = $(e.target)
     ELA.router.navigate("app/#{$target.data('path')}", trigger: true)
+
+  openLayout: (e) =>
+    $target = $(e.target)
+    ELA.router.navigate "app/#{@model.path}/#{$target.data('path')}",
+      trigger: true
 
   showHelp: =>
     ELA.router.navigate("app/#{@model.path}/help", trigger: true)
@@ -153,19 +175,40 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
       @subviews.help?.setActive(showHelp)
       @$app.toggleClass('active', not showHelp)
 
-  render: =>
-    @$el.html @template
+  availableLayouts: ->
+    names = []
+    for name, layout of @layouts
+      if layout.minWidth
+        continue if layout.minWidth > $(window).width()
+      if layout.minHeight
+        continue if layout.minHeight > $(window).height()
+      names.push(name)
+    names
+
+  headlineHtml: ->
+    @headlineTemplate
       name: @model.name
       path: @model.path
+      relatedApps: @relatedApps()
+      availableLayouts: @availableLayouts()
+
+  renderHeadlineHtml: =>
+    @$('header h2').html(@headlineHtml())
+
+  render: =>
+    @$el.html @template
       hasHelpText: @model.hasHelpText
       iconAsideNames: @iconAsideNames()
       contextAsides: @contextAsides()
-      relatedApps: @relatedApps()
+      views: view.name for view in @views
       currentPath: @model.path
+      headlineHtml: @headlineHtml()
     @$shareLink = @$('li.share-link')
     @$shareForm = @$('li.share-form')
     @$shareUrlInput = @$shareForm.find('input')
     @$shareCopyButton = @$shareForm.find('button')
+
+    _.delay(@renderHeadlineHtml)
 
     @$app = @$('section.app')
     for aside in @asides
@@ -188,7 +231,7 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
         model: @model
         parentView: this
         views: @views
-        layout: @layout
+        layouts: @layouts
         localePrefix: @localePrefix
       @$('.viewport').replaceWith(view.render().el)
 

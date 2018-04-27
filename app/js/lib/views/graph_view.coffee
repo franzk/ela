@@ -5,12 +5,6 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
     unless options.name?
       throw 'ELA.Views.GraphView: option `name` is required'
 
-    if options.graph?.view
-      @GraphView = options.graph.view.toFunction()
-    else
-      @GraphView = ELA.Views.InterpolatedGraph
-    @displayParams = @model.displayParams[options.name] = new @GraphView.Params
-
     unless options.legend is false
       if _.isObject(options.legend) and options.legend.view?
         @LegendView = options.legend.view.toFunction()
@@ -33,6 +27,15 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         switch axis
           when 'x' then @bottomAxisHandler = attribute: props.attribute
           when 'y' then @leftAxisHandler = attribute: props.attribute
+    @guides = []
+    if @bottomAxisHandler?
+      @guides.push
+        orientation: 'vertical'
+        attribute: @bottomAxisHandler.attribute
+    if @leftAxisHandler?
+      @guides.push
+        orientation: 'horizontal'
+        attribute: @leftAxisHandler.attribute
 
     if options.graph?.curves?
       @curves = options.graph.curves.slice()
@@ -40,6 +43,18 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         curve.get('function') is @curves[0]
     else
       @axisLabelingForCurve = @model.curves.first()
+
+    if options.graph?.view
+      @GraphView = options.graph.view.toFunction()
+    else
+      @GraphView = ELA.Views.Graph
+    @displayParams = @model.displayParams[options.name] ?= new @GraphView.Params
+      guides: @guides
+      curves: @curves
+      axisLabelingForCurve: @axisLabelingForCurve
+      xAxis: @xAxis
+      yAxis: @yAxis
+      app: @model
 
     @subviews = {}
 
@@ -90,28 +105,15 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
 
     delay =>
       $graph = @$('.graph')
-      guides = []
-      if @bottomAxisHandler?
-        guides.push
-          orientation: 'vertical'
-          attribute: @bottomAxisHandler.attribute
-      if @leftAxisHandler?
-        guides.push
-          orientation: 'horizontal'
-          attribute: @leftAxisHandler.attribute
-      view = @subviews.graph ?= new @GraphView
+      @subviews.graph?.remove()
+      # Taken from ELA.Views.Canvas::readCanvasResolution
+      @displayParams.set
+        width: $graph[0].clientWidth
+        height: $graph[0].clientHeight
+      view = @subviews.graph = new @GraphView
         model: @model
         parentView: this
         params: @displayParams
-        defaults:
-          # Taken from ELA.Views.Canvas::readCanvasResolution
-          width: $graph[0].clientWidth
-          height: $graph[0].clientHeight
-          guides: guides
-          curves: @curves
-          axisLabelingForCurve: @axisLabelingForCurve
-          xAxis: @xAxis
-          yAxis: @yAxis
         localePrefix: @localePrefix
       if @leftAxisHandler?
         view.$el.on('tap', @subviews.leftAxisHandler.updateValue)

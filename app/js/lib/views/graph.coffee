@@ -1,18 +1,6 @@
 ELA.Views ?= {}
-class ELA.Views.BaseGraph extends ELA.Views.Canvas
-  class @Params extends Backbone.Model
-    serialize: ->
-      xScale: @get('xScale')
-      yScale: @get('yScale')
-      xOriginRatio: @get('xOrigin') / @get('width')
-      yOriginRatio: @get('yOrigin')  / @get('height')
-
-    deserialize: (attributes) ->
-      @set
-        xScale: attributes.xScale
-        yScale: attributes.yScale
-        xOrigin: @get('width') * attributes.xOriginRatio
-        yOrigin: @get('height') * attributes.yOriginRatio
+class ELA.Views.Graph extends ELA.Views.Canvas
+  @Params: ELA.Models.GraphParams
 
   # A variable that contains temporary information about the pinch
   # or pan action that is currently performed.
@@ -24,75 +12,33 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
   # We need to cache current pixelRatio to reset the canvas scale.
   pixelRatio: null
 
-  # Defaults for the view params model.
-  defaults:
-    xScale: 1.1 # display 10% more than the configured xRange
-    yScale: 1.1 # display 10% more than the configured yRange
-    xOrigin: 30
-    yOrigin: 0
-    xOriginAnchor: 'left'
-    yOriginAnchor: 'bottom'
-    xOriginRatio: null
-    yOriginRatio: null
-    yOffset: 0
-    debug: {}
-    xLabelPosition: 'top'
-    yLabelPosition: 'right'
-    xPanLocked: false
-    yPanLocked: false
-    xPinchLocked: false
-    yPinchLocked: false
-    scaleLink: false
-    xAxis: { y: 0 }
-    yAxis: { x: 0 }
-
   initialize: ->
     super
 
-    if @defaults.xOriginRatio? and @defaults.xOriginAnchor isnt 'left'
-      @defaults.xOriginRatio = 1 - @defaults.xOriginRatio
-      @defaults.xOriginAnchor = 'left'
+    @listenTo(@params,
+      'change:xOrigin change:yOrigin ' +
+      'change:yRange change:xRange ' +
+      'change:width change:height ' +
+      'change:axisLabelingForCurve'
+      @requestRepaint
+    )
 
-    if @defaults.yOriginRatio? and @defaults.yOriginAnchor is 'bottom'
-      @defaults.yOriginRatio = 1 - @defaults.yOriginRatio
-      @defaults.yOriginAnchor = 'top'
+    @listenTo(@model.curves, 'change:selected', @requestRepaint)
+    @listenTo(@model, 'change:calculators', @requestRepaint)
 
-    @resetCanvas()
-
-    # @calculateRanges changes params.xyRange
-    @params.on 'change:xScale', @calculateRangeX
-    @params.on 'change:yScale', @calculateRangeY
-    # When xyRange change we need to repaint
-    @params.on 'change:xOrigin change:yOrigin change:yRange change:xRange change:width change:height', @requestRepaint
-
-    @calculateRanges()
-
-  calculateRangeX: =>
-    @params.set xRange: @maxRangeX()
-
-  calculateRangeY: =>
-    @params.set yRange: @maxRangeY()
-
-  calculateRanges: =>
-    @calculateRangeX()
-    @calculateRangeY()
-
-  maxRangeX: (func, xScale = @params.get('xScale')) =>
-    xScale * 5
-
-  maxRangeY: (func, yScale = @params.get('yScale')) =>
-    yScale * 5
+    for guide in @params.get('guides')
+      @listenTo(@model, "change:#{guide.attribute}", @requestRepaint)
 
   events:
-    'pan': 'pan',
-    'panstart': 'panstart'
-    'panend': 'panend'
-    'pinchstart': 'pinchstart'
-    'pinch': 'pinch'
-    'pinchend': 'pinchend'
-    'doubletap': 'resetCanvas'
-    'mousewheel': 'mousewheel'
-    'DOMMouseScroll': 'mousewheel'
+    pan: 'pan'
+    panstart: 'panstart'
+    panend: 'panend'
+    pinchstart: 'pinchstart'
+    pinch: 'pinch'
+    pinchend: 'pinchend'
+    doubletap: 'resetCanvas'
+    mousewheel: 'mousewheel'
+    DOMMouseScroll: 'mousewheel'
 
   hammerjs:
     recognizers: [
@@ -119,46 +65,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
   # Set xScale/yScale and xOrigin/yOrigin to their default values.
   resetCanvas: =>
     clearTimeout(@panendTimeout)
-
-    if @defaults.xOriginRatio?
-      xOrigin = @params.get('width') * @defaults.xOriginRatio
-    else if @defaults.xOriginAnchor is 'left'
-      xOrigin = @defaults.xOrigin
-    else
-      xOrigin = @params.get('width') - @defaults.xOrigin
-
-    if @defaults.yOriginRatio?
-      yOrigin = @params.get('height') * @defaults.yOriginRatio
-    else if @defaults.yOriginAnchor is 'bottom'
-      yOrigin = @params.get('height') - @defaults.yOrigin
-    else
-      yOrigin = @defaults.yOrigin
-
-    xScale = @defaults.xScale
-    yScale = @defaults.yScale
-
-    if @params.get('scaleLink')
-      # axis with less pixels per unit length should define scale
-      if @params.get('width') / @maxRangeX(null, 1) < @params.get('height') / @maxRangeY(null, 1)
-         yScale = @linkedYScale(xScale)
-      else
-         xScale = @linkedXScale(yScale)
-
-    @params.set
-      xScale: xScale
-      yScale: yScale
-      xOrigin: xOrigin
-      yOrigin: yOrigin
-
-  linkedXScale: (yScale) =>
-    # calculate xScale to fulfill the following equation:
-    # (width / maxRangeX) / xScale = height / maxRangeY
-    (@params.get('width') / @maxRangeX(null, 1)) / (@params.get('height') / @maxRangeY(null, yScale))
-
-  linkedYScale: (xScale) =>
-    # calculate yScale to fulfill the following equation:
-    # (height / maxRangeY) / yScale = width / maxRangeX
-    (@params.get('height') / @maxRangeY(null, 1)) / (@params.get('width') / @maxRangeX(null, xScale))
+    @params.reset()
 
   debugCircle: (context, color, x, y, radius = 20) =>
     context.beginPath()
@@ -282,46 +189,39 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     precision += 1 while stepSize and stepSize*Math.pow(10, precision) < 1
     value.toFixed(precision)
 
-  setCanvasResolution: (params) ->
-    super
-
-    # Recalculate xOrigin/yOrigin if we're in a width/height change
-    # callback. Otherwise, we're initializing and we should skip that.
-    if params?
-      previous = @params.previousAttributes()
-      previousXOrigin = if previous.xOrigin? then previous.xOrigin else @params.get('xOrigin')
-      previousYOrigin = if previous.yOrigin? then previous.yOrigin else @params.get('yOrigin')
-      @params.set
-        xOrigin: previousXOrigin * @params.get('width') / previous.width
-        yOrigin: previousYOrigin * @params.get('height') / previous.height
-
-      # We don't need that during initialisation as well because it's
-      # done by resetCanvas
-      switch @params.get('scaleLink')
-        when 'x'
-          @params.set xScale: @linkedXScale()
-        when 'y'
-          @params.set yScale: @linkedYScale()
-
   xAxisValueLabel: (val, stepsize) ->
     @axisLabel(val, stepsize)
 
   yAxisValueLabel: (val, stepsize) ->
+    curve = @params.get('axisLabelingForCurve')
+    if curve?
+      curvePresenter = @Present(curve)
+      val = curvePresenter.unitValue(val)
+      stepsize = curvePresenter.unitValue(stepsize)
     @axisLabel(val - @params.get('yOffset'), stepsize)
 
-  _axisLabel: (label) ->
-    if typeof label is 'function'
-      label.call(this)
-    else if label?
-      label
-    else
-      ''
+  genericAxisLabel: (axis) ->
+    axisLabel = @params.get("#{axis}AxisLabel")
+    return axisLabel.call(this) if axisLabel? and _.isFunction(axisLabel)
+    return axisLabel if axisLabel?
 
-  xAxisLabel: -> @_axisLabel(@params.get('xAxisLabel'))
-  yAxisLabel: -> @_axisLabel(@params.get('yAxisLabel'))
+    axisLabelLocale = @params.get("#{axis}AxisLabelLocale")
+    return @loadLocale(axisLabelLocale) if axisLabelLocale?
 
-  renderCurves: ->
-    # stub
+    curve = @params.get('axisLabelingForCurve')
+    if curve?
+      return @Present(curve).fullXAxisLabel() if axis is 'x'
+      return @Present(curve).fullYAxisLabel() if axis is 'y'
+
+    @loadLocale("graph.#{axis}AxisLabel", defaultValue: '')
+
+  xAxisLabel: -> @genericAxisLabel('x')
+  yAxisLabel: -> @genericAxisLabel('y')
+
+  # Stubs
+  beforeRenderCurves: ->
+  afterRenderCurves: ->
+  beforeRender: ->
 
   renderXAxis: (y) ->
     @context.setLineDash []
@@ -347,7 +247,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
       @context.textBaseline = 'middle'
       @context.textAlign = 'center'
 
-      xRange = @maxRangeX()
+      xRange = @params.maxRangeX()
       xMin = -@xOrigin * xRange / @width
       xMax = (@width - @xOrigin) * xRange / @width
       xStepSize = @roundStepSize(100 * xRange / @width)
@@ -395,7 +295,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
         @context.textAlign = 'right'
       @context.textBaseline = 'middle'
 
-      yRange = @maxRangeY()
+      yRange = @params.maxRangeY()
       yMin = -(@height - @yOrigin) * yRange / @height
       yMax = @yOrigin * yRange / @height
       yStepSize = @roundStepSize(100 * yRange / @height)
@@ -426,7 +326,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     @context.beginPath()
 
     unless @params.get('xLabelPosition') is 'none'
-      xRange = @maxRangeX() unless xRange?
+      xRange = @params.maxRangeX() unless xRange?
       xMin = -@xOrigin * xRange / @width
       xMax = (@width - @xOrigin) * xRange / @width
       xStepSize = @roundStepSize(100 * xRange / @width)
@@ -436,7 +336,7 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
         @context.lineTo(xPos, @height)
 
     unless @params.get('yLabelPosition') is 'none'
-      yRange = @maxRangeY() unless yRange?
+      yRange = @params.maxRangeY() unless yRange?
       yMin = -(@height - @yOrigin) * yRange / @height
       yMax = @yOrigin * yRange / @height
       yStepSize = @roundStepSize(100 * yRange / @height)
@@ -448,8 +348,201 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     @context.stroke()
     @context.closePath()
 
-  beforeRender: ->
-    # Stub to execute code before rendering...
+  getControlPoints: (x0, y0, x1, y1, x2, y2, tension) ->
+    d01 = Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2))
+    d12 = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
+    fa = tension * d01 / (d01 + d12)
+    fb = tension - fa
+    p1x = x1 + fa * (x0 - x2)
+    p1y = y1 + fa * (y0 - y2)
+    p2x = x1 - fb * (x0 - x2)
+    p2y = y1 - fb * (y0 - y2)
+    [p1x, p1y, p2x, p2y]
+
+  drawSpline: (points, t, closed, xPos = ((x) -> x), yPos = ((y) -> y)) ->
+    if points.length <= 4
+      @context.moveTo(xPos(points[0]), yPos(points[1]))
+      @context.lineTo(xPos(points[2]), yPos(points[3]))
+    else
+      cp = []
+      n = points.length
+      points = _.clone(points)
+      if closed
+        points.push points[0], points[1], points[2], points[3]
+        points.unshift points[n - 1]
+        points.unshift points[n - 1]
+        for i in [0..n] by 2
+          cp = cp.concat(@getControlPoints(points[i], points[i+1], points[i+2], points[i+3], points[i+4], points[i+5], t))
+        cp = cp.concat(cp[0], cp[1])
+        for i in [0..n] by 2
+          @context.moveTo(xPos(points[i]), yPos(points[i+1]))
+          @context.bezierCurveTo(xPos(cp[2*i-2]), yPos(cp[2*i-1]), xPos(cp[2*i]), yPos(cp[2*i+1]), xPos(points[i+2]), yPos(points[i+3]))
+      else
+        for i in [0..(n-4)] by 2
+          cp = cp.concat(@getControlPoints(points[i], points[i+1], points[i+2], points[i+3], points[i+4], points[i+5], t))
+
+        @context.moveTo(xPos(points[0]), yPos(points[1]))
+        @context.quadraticCurveTo(xPos(cp[0]), yPos(cp[1]), xPos(points[2]), yPos(points[3]))
+        for i in [2..(n-3)] by 2
+          @context.moveTo(xPos(points[i]), yPos(points[i+1]))
+          @context.bezierCurveTo(xPos(cp[2*i-2]), yPos(cp[2*i-1]), xPos(cp[2*i]), yPos(cp[2*i+1]), xPos(points[i+2]), yPos(points[i+3]))
+        @context.moveTo(xPos(points[n-2]), yPos(points[n-1]))
+        @context.quadraticCurveTo(xPos(cp[2*n-10]), yPos(cp[2*n-9]), xPos(points[n-4]), yPos(points[n-3]))
+
+  drawCurve: (points, tension = 0, closed = false, xPos = ((x) -> x), yPos = ((y) -> y)) ->
+    if tension is 0
+      beginning = true
+      if points.length >= 2
+        @context.moveTo(xPos(points[0]), yPos(points[1]))
+        for i in [2...points.length] by 2
+          @context.lineTo(xPos(points[i]), yPos(points[i+1]))
+    else
+      @drawSpline(points, tension, closed, xPos, yPos)
+
+  renderCurves: ->
+    resultCurves = []
+    for calc, i in @model.get('calculators')
+      for curve, j in @params.sortedCurves()
+        func = curve.get('function')
+        resultCurves.push
+          curve: curve
+          result: calc[func](@xMin, @xMax)
+          yRange: @params.maxRangeY(func)
+          xRange: @params.maxRangeX(func)
+          calculatorIdx: i
+
+    @beforeRenderCurves(resultCurves)
+
+    for resultCurve in resultCurves
+      curve = resultCurve.curve
+      result = resultCurve.result
+      yRange = resultCurve.yRange
+      xRange = resultCurve.xRange
+      if _.isObject(result)
+        xPos = (x) => @xOrigin + x * @width / xRange
+        yPos = (y) => @yOrigin - (y + @yOffset) * @height / yRange
+
+        if curve.hasSubcurves()
+          for name, subcurve of curve.subcurves()
+            if result[name].points?
+              @renderCurve(subcurve, result[name], xPos, yPos, resultCurve.calculatorIdx)
+            else if result[name].radius?
+              @renderCircle(subcurve, result[name], xPos, yPos, resultCurve.calculatorIdx)
+        else
+          if result.points?
+            @renderCurve(curve, result, xPos, yPos, resultCurve.calculatorIdx)
+          else if result.radius?
+            @renderCircle(curve, result, xPos, yPos, resultCurve.calculatorIdx)
+
+    @afterRenderCurves(resultCurves)
+
+  renderCircle: (curve, result, xPos, yPos, calculatorIdx) ->
+    func = curve.get('function')
+    yRange = @maxRangeY(func)
+    @context.beginPath()
+    width  = Math.abs(xPos(2*result.radius) - @xOrigin)
+    height = Math.abs(yPos(2*result.radius) - @yOrigin)
+    centerX = xPos(result.center[0])
+    centerY = yPos(result.center[1])
+
+    aX = centerX - width/2
+    aY = centerY - height/2
+    hB = (width / 2) * .5522848
+    vB = (height / 2) * .5522848
+    eX = aX + width
+    eY = aY + height
+    mX = aX + width / 2
+    mY = aY + height / 2
+    @context.moveTo(aX, mY);
+    @context.bezierCurveTo(aX, mY - vB, mX - hB, aY, mX, aY);
+    @context.bezierCurveTo(mX + hB, aY, eX, mY - vB, eX, mY);
+    @context.bezierCurveTo(eX, mY + vB, mX + hB, eY, mX, eY);
+    @context.bezierCurveTo(mX - hB, eY, aX, mY + vB, aX, mY);
+
+    @context.setLineDash(curve.lineDash(calculatorIdx))
+    if curve.strokeStyle()
+      @context.lineWidth = curve.get('lineWidth')
+      @context.strokeStyle = curve.strokeStyle()
+      @context.stroke()
+    if fillStyle = curve.get('fillStyle')
+      @context.fillStyle = fillStyle
+      @context.fill()
+    @context.closePath()
+
+  renderCurve: (curve, result, xPos, yPos, calculatorIdx) ->
+    @context.beginPath()
+    @context.setLineDash(curve.lineDash(calculatorIdx))
+    if result.multiplePaths
+      for setOfPoints, i in result.points
+        @drawCurve(setOfPoints, result.tension, false, xPos, yPos)
+    else
+      @drawCurve(result.points, result.tension, false, xPos, yPos)
+    if curve.strokeStyle()
+      @context.lineWidth = curve.get('lineWidth')
+      @context.strokeStyle = curve.strokeStyle()
+      @context.stroke()
+    if fillStyle = curve.get('fillStyle')
+      @context.fillStyle = fillStyle
+      @context.fill()
+    @context.closePath()
+
+  renderGuide: (guide) ->
+    valueAtPoint = @model.get(guide.attribute)
+
+    @context.beginPath()
+    @context.setLineDash []
+    @context.strokeStyle = '#999999'
+    @context.lineWidth = 2
+
+    # Border below legend
+    @context.moveTo(@width, 0)
+    @context.lineTo(0, 0)
+
+    if guide.orientation is 'vertical'
+      # Border next to range handler
+      @context.moveTo(0, @height)
+      @context.lineTo(@width, @height)
+      @context.lineTo(@width, @height-10)
+
+      # Range handler line
+      xPos = @xOrigin + valueAtPoint * @width / @xRange
+      @context.moveTo(xPos, 0)
+      @context.lineTo(xPos, @height)
+    else
+      # Border next to range handler
+      @context.lineTo(0, @height)
+
+      # Range handler line
+      yPos = - valueAtPoint * @height / @yRange + @yOrigin
+      @context.moveTo(0, yPos)
+      @context.lineTo(@width, yPos)
+
+    @context.stroke()
+    @context.closePath()
+
+    @context.beginPath()
+    # The fillStyle of the triangle should match the color of the
+    # background set for the legend and range handler in screen.styl:
+    @context.fillStyle = "#f2f2f2"
+    @context.lineWidth = 1
+
+    if guide.orientation is 'vertical'
+      @context.moveTo(xPos + 8, 0)
+      @context.lineTo(xPos, 8)
+      @context.lineTo(xPos - 8, 0)
+      @context.moveTo(xPos - 8, @height)
+      @context.lineTo(xPos, @height - 8)
+      @context.lineTo(xPos + 8, @height)
+    else
+      @context.moveTo(0, yPos - 8)
+      @context.lineTo(8, yPos)
+      @context.lineTo(0, yPos + 8)
+      @context.moveTo(@width, yPos - 8)
+      @context.lineTo(@width - 8, yPos)
+      @context.lineTo(@width, yPos + 8)
+    @context.stroke()
+    @context.fill()
+    @context.closePath()
 
   render: =>
     @width = @params.get('width')
@@ -485,5 +578,8 @@ class ELA.Views.BaseGraph extends ELA.Views.Canvas
     else
       @renderYAxis(yAxis.x)
     @renderCurves()
+    
+    for guide in @params.get('guides')
+      @renderGuide(guide)
 
     this

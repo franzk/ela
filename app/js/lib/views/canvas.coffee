@@ -1,10 +1,8 @@
 ELA.Views ?= {}
 class ELA.Views.Canvas extends Backbone.Poised.View
-  tagName: 'canvas'
+  @Params: ELA.Models.CanvasParams
 
-  class @Params extends Backbone.Model
-    serialize: -> {}
-    deserialize: ->
+  tagName: 'canvas'
 
   # True if an animation frame request is currently pending
   animationFrameRequested: false
@@ -15,15 +13,9 @@ class ELA.Views.Canvas extends Backbone.Poised.View
     @defaultFont = "#{fontWeight} 12px Roboto"
 
   initialize: (options = {}) ->
-    # Make sure we got the parameters model for holding view specific information
-    @defaults = _.defaults(options.defaults, @defaults) if options.defaults?
-    if options.params?
-      @params = options.params
-      @params.set(@defaults)
-    else
-      @model.displayParams ?= {}
-      @params = new @constructor.Params(@defaults)
-      @model.displayParams[options.name] = @params
+    # Make sure we got the parameters model for holding view specific
+    # information
+    @params = options.params
 
     @setCanvasResolution()
 
@@ -44,9 +36,10 @@ class ELA.Views.Canvas extends Backbone.Poised.View
     # Do not take scale into account here, otherwise
     # non-active subapps will get initialized with wrong size
     # because they have a css scale of 0.75
-    @params.set
-      width: $parent[0].clientWidth
-      height: $parent[0].clientHeight
+    if $parent.length > 0
+      @params.set
+        width: $parent[0].clientWidth
+        height: $parent[0].clientHeight
 
   setCanvasResolution: ->
     width = @params.get('width')
