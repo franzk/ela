@@ -1,10 +1,8 @@
 ELA.Views ?= {}
 class ELA.Views.Canvas extends Backbone.Poised.View
-  tagName: 'canvas'
+  @Params: ELA.Models.CanvasParams
 
-  class @Params extends Backbone.Model
-    serialize: -> {}
-    deserialize: ->
+  tagName: 'canvas'
 
   # True if an animation frame request is currently pending
   animationFrameRequested: false
@@ -15,15 +13,9 @@ class ELA.Views.Canvas extends Backbone.Poised.View
     @defaultFont = "#{fontWeight} 12px Roboto"
 
   initialize: (options = {}) ->
-    # Make sure we got the parameters model for holding view specific information
-    @defaults = _.defaults(options.defaults, @defaults) if options.defaults?
-    if options.params?
-      @params = options.params
-      @params.set(@defaults)
-    else
-      @model.displayParams ?= {}
-      @params = new @constructor.Params(@defaults)
-      @model.displayParams[options.name] = @params
+    # Make sure we got the parameters model for holding view specific
+    # information
+    @params = options.params
 
     @setCanvasResolution()
 
