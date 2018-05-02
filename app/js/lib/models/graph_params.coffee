@@ -56,7 +56,8 @@ class ELA.Models.GraphParams extends ELA.Models.CanvasParams
     for calc in @app.get('calculators')
       filteredCurves = @filteredCurves()
       for curve in filteredCurves
-        @listenTo calc, "change:#{curve.get('function')}", @requestRepaint
+        @listenTo calc, "change:#{curve.get('function')}", ->
+          @trigger('repaint')
 
       @listenTo(calc, 'change:maxX change:xRange', @calculateRangeX)
       @listenTo(calc, 'change:maxY change:yRange', @calculateRangeY)

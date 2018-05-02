@@ -27,6 +27,8 @@ class ELA.Views.Canvas extends Backbone.Poised.View
 
     @listenTo(@params, 'change:width change:height', @setCanvasResolution)
 
+    @listenTo(@params, 'repaint', @requestRepaint)
+
   remove: ->
     super
     $(window).off('resize', @readCanvasResolution)
