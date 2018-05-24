@@ -7,5 +7,5 @@ class ELA.Models.CanvasParams extends Backbone.Model
     @app = attributes.app
     delete attributes.app
     # Special behavior: initial attributes overwrite defaults
-    @defaults = _.defaults(_.clone(@defaults), attributes)
+    @defaults = _.defaults(attributes, _.clone(@defaults))
     super({}, options)
