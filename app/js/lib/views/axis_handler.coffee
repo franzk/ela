@@ -26,6 +26,14 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
     @precision = ELA.settings[@model.name]?.formFields?[@attribute]?.precision
     @precision ?= options.precision
     @precision ?= 2
+    @maxValue = ELA.settings[@model.name]?.formFields?[@attribute]?.maxValue
+    @maxValue ?= ELA.settings[@model.name]?.formFields?[@attribute]?.range?[1]
+    @maxValue ?= options.maxValue
+    @maxValue ?= options.range?[1]
+    @minValue = ELA.settings[@model.name]?.formFields?[@attribute]?.minValue
+    @minValue ?= ELA.settings[@model.name]?.formFields?[@attribute]?.range?[0]
+    @minValue ?= options.minValue
+    @minValue ?= options.range?[1]
 
     @listenTo @model, "change:#{@attribute}", @renderText
 
@@ -45,6 +53,8 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
 
     pow = Math.pow(10, @precision)
     point = Math.round(point * pow) / pow
+    point = Math.max(point, @minValue) if isFinite(@minValue)
+    point = Math.min(point, @maxValue) if isFinite(@maxValue)
     @model.set(@attribute, point)
 
   renderText: =>
