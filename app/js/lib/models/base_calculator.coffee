@@ -83,13 +83,13 @@ class ELA.Models.BaseCalculator
     bindDeps = (f, callback) ->
       for dep in f.deps
         @on "change:#{dep}", =>
-          callback()
+          callback.call(this)
           @trigger("change:#{name}")
       @_memo[name].eventsBound = true
 
     parameters = do ->
       funcStr = func.toString()
-      if (match = funcStr.match(/function ?\(([^\)]+)\)/))?
+      if (match = funcStr.match(/^function ?\(([^\)]+)\)/))?
         match[1].split(',')
       else
         []
@@ -98,7 +98,7 @@ class ELA.Models.BaseCalculator
     # func is a string parameter when calling the function.
     f = if parameters.length > 0
       ->
-        @_memo[name] ||= values: {}, eventsBound: false
+        @_memo[name] ?= values: {}, eventsBound: false
         key = JSON.stringify(arguments)
 
         unless @_memo[name].values[key]?
@@ -107,14 +107,14 @@ class ELA.Models.BaseCalculator
         resolveDeps.call(this, f) unless f.depsResolved
 
         unless @_memo[name].eventsBound
-          bindDeps.call this, f, =>
+          bindDeps.call this, f, ->
             @_memo[name].values = {}
 
         @_memo[name].values[key]
 
     else
       ->
-        @_memo[name] ||= eventsBound: false
+        @_memo[name] ?= eventsBound: false
 
         unless @_memo[name].value?
           @_memo[name].value = func.apply(this, arguments)
@@ -122,7 +122,7 @@ class ELA.Models.BaseCalculator
         resolveDeps.call(this, f) unless f.depsResolved
 
         unless @_memo[name].eventsBound
-          bindDeps.call this, f, =>
+          bindDeps.call this, f, ->
             @_memo[name].value = null
 
         @_memo[name].value
