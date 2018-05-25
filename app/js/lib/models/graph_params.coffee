@@ -39,8 +39,8 @@ class ELA.Models.GraphParams extends ELA.Models.CanvasParams
     @on('change:width change:height', @resize)
 
     # @calculateRanges changes params.xyRange
-    @on('change:xScale', @calculateRangeX)
-    @on('change:yScale', @calculateRangeY)
+    @on('change:xScale', @calculateRanges)
+    @on('change:yScale', @calculateRanges)
 
     @calculateRanges()
     @bindCalculatorEvents()
@@ -91,6 +91,8 @@ class ELA.Models.GraphParams extends ELA.Models.CanvasParams
         @set(yScale: @linkedYScale(xScale))
       else
         @set(xScale: @linkedXScale(yScale))
+    else
+      @set(xScale: @defaults.xScale, yScale: @defaults.yScale)
 
   resize: ->
     previous = @previousAttributes()
@@ -115,10 +117,15 @@ class ELA.Models.GraphParams extends ELA.Models.CanvasParams
     else
       @reset()
 
+  calculateRangeX: ->
+    @set(xRange: @maxRangeX())
+
+  calculateRangeY: ->
+    @set(yRange: @maxRangeY())
+
   calculateRanges: ->
-    @set
-      xRange: @maxRangeX()
-      yRange: @maxRangeY()
+    @calculateRangeX()
+    @calculateRangeY()
 
   maxRangeX: (func, xScale = @get('xScale')) ->
     func = @get('axisLabelingForCurve')?.get('function') unless func?
