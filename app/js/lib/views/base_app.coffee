@@ -10,10 +10,12 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
   # Typically in a subclass we override the list of asides. This may
   # be a list of classes inheriting from ELA.Views.BaseAside or an
   # object with `name` and `klass` attributes.
-  asides: []
+  asides: [
+    { name: 'parameters', view: 'ELA.Views.ParametersAside' }
+  ]
 
   # Typically in a subclass we override the list of views.
-  views: []
+  views: [ graph: {} ]
 
   events:
     'tap header .overview.icon': 'backToOverview'
