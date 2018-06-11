@@ -47,6 +47,12 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
     for aside in @asides
       aside.link ?= 'icon'
 
+    @layouts ?=
+      all:
+        layout: _.map(@views, (view, idx) ->
+          String.fromCharCode(97 + idx)
+        )
+
     $(window).on('resize', @renderHeadlineHtml)
     $(window).on('resize', @checkLayout)
     @checkLayout()
