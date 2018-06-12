@@ -48,7 +48,7 @@ class Backbone.Poised.Slider extends Backbone.Poised.View
 
     @stepSize = options.stepSize
 
-    @model.on "change:#{@attribute}", @updateHandlePosition
+    @listenTo(@model, "change:#{@attribute}", @updateHandlePosition)
 
   # TODO: Save previously focused element and resore focus after
   # slider action finished.
@@ -92,18 +92,17 @@ class Backbone.Poised.Slider extends Backbone.Poised.View
     position = Math.min(position, barWidth)
     @startValue + Math.round((@range * position / barWidth) / @stepSize) * @stepSize
 
-  calculateHandlePosition: (val) ->
-    val = Math.max(val, @startValue)
-    val = Math.min(val, @startValue+@range)
-    (val - @startValue)/ @range * 100
+  calculateHandlePosition: ->
+    val = Math.max(@model.get(@attribute), @startValue)
+    val = Math.min(val, @startValue + @range)
+    (val - @startValue) / @range * 100
 
-  updateHandlePosition: (model, value) =>
-    position = @calculateHandlePosition(value)
-    @$handle.css 'left', "#{position.toFixed(2)}%"
+  updateHandlePosition: ->
+    @$handle.css('left', "#{@calculateHandlePosition().toFixed(2)}%")
 
   render: =>
     @$el.html @template()
     @$handle = @$el.find('.handle')
     @$bar    = @$el.find('.bar')
-    @updateHandlePosition(@model, @model.get(@attribute))
+    @updateHandlePosition()
     this

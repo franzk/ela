@@ -29,14 +29,14 @@ class Backbone.Poised.Textfield extends Backbone.View
     if _.isArray(options.range)
       [@options.minValue, @options.maxValue] = options.range
 
-    @model.on "change:#{@attribute}", @setValue
+    @listenTo(@model, "change:#{@attribute}", @setValue)
 
   limit: (val) ->
     val = Math.max(val, @options.minValue) if @options.minValue?
     val = Math.min(val, @options.maxValue) if @options.maxValue?
     val
 
-  _updateValue: (value = @model.get(@attribute)) =>
+  _updateValue: (value = @model.get(@attribute), options = {}) =>
     if @options.type is 'number'
       if typeof value is 'string'
         if value.match(/^[+\-]?\d+(\.\d+)?$/i)?
@@ -47,15 +47,17 @@ class Backbone.Poised.Textfield extends Backbone.View
       if @options.precision
         valueString = value.toFixed(@options.precision)
 
-    @model.set(@attribute, value)
     @$input.val(valueString or value)
 
-    if @model.validate? and @options.validate
-      @model.validate(@attribute)
+    unless options.updateModel is false
+      @model.set(@attribute, value)
 
-  setValue: (_, value) =>
+      if @model.validate? and @options.validate
+        @model.validate(@attribute)
+
+  setValue: ->
     return if @$input.is(':focus')
-    @_updateValue(value)
+    @_updateValue(undefined, updateModel: false)
 
   readInput: =>
     @_updateValue(@$input.val())

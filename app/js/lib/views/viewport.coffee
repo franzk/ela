@@ -13,12 +13,7 @@ class ELA.Views.Viewport extends Backbone.Poised.View
 
     @subviews = {}
 
-    @layouts = options.layouts or
-      [
-        layout: _.map(@views, (view, idx) ->
-          String.fromCharCode(97 + idx)
-        ).join(' ')
-      ]
+    @layouts = options.layouts
 
     @listenTo(@model, 'change:layout', @render)
 
