@@ -29,7 +29,7 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
     'tap header .poised.subviews.select .option.subapp': 'openSubapp'
     'tap header .poised.subviews.select .option.layout': 'openLayout'
     'tap header .context.icon': 'toggleContextMenu'
-    'tap article.graph:has(~ aside.active)': 'hideAsides'
+    'tap article.viewport:has(~ aside.active)': 'hideAsides'
     'tap section:has(.subviews.select.view)': 'hideSubappOptions'
     'tap section:has(.menu.view)': 'hideMenus'
 
