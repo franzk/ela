@@ -55,6 +55,10 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
       xAxis: @xAxis
       yAxis: @yAxis
       app: @model
+      xOrigin: options.graph?.xOrigin
+      yOrigin: options.graph?.yOrigin
+      xOriginRatio: options.graph?.xOriginRatio
+      yOriginRatio: options.graph?.yOriginRatio
 
     @subviews = {}
 
