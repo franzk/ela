@@ -361,13 +361,17 @@ aside.curves
       content "\f05a"
       margin-right 0.4em
 
-img.logo
-  absolute none 0 0 none
-  height $axis-handler-size
-  z-layer 'section', 'graph'
+a#upstream
+  img
+    absolute none 0 0 none
+    height $axis-handler-size
+    z-layer 'section', 'graph'
 
   @media $media-lt-phone
-    display none
+    pointer-events none
+
+    img
+      opacity 0.4
 
 span.mark
   background-color yellow
