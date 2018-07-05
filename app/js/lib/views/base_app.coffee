@@ -30,6 +30,7 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
     'tap header .poised.subviews.select .option.layout': 'openLayout'
     'tap header .context.icon': 'toggleContextMenu'
     'tap article.viewport:has(~ aside.active)': 'hideAsides'
+    'tap article.viewport:has(~ .headup.active)': 'hideHeadup'
     'tap section:has(.subviews.select.view)': 'hideSubappOptions'
     'tap section:has(.menu.view)': 'hideMenus'
 
@@ -41,8 +42,8 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
   initialize: ->
     @listenTo @model, 'change:currentAside', @toggleAside
     @listenTo @model, 'change:showHelp', @renderHelp
-    @on 'controlLiveChangeStart', @liveChangeStart
-    @on 'controlLiveChangeEnd', @liveChangeEnd
+    @on 'controlLiveChangeStart', @showHeadup
+    @on 'controlLiveChangeEnd', @hideHeadup
 
     for aside in @asides
       aside.link ?= 'icon'
@@ -150,15 +151,20 @@ class ELA.Views.BaseApp extends Backbone.Poised.View
       @$("header .#{value}.aside.icon").toggleClass('active', true)
       @$("aside.#{value}").toggleClass('active', true)
 
-  liveChangeStart: (slider) =>
-    if $(window).width() <= 768
-      @$('aside.active').addClass('hidden')
-      @subviews.headup.activate(slider)
+  showHeadup: (control, options = {}) =>
+    options.mobileOnly ?= true
+    isMobile = $(window).width() <= 768
+    if isMobile or not options.mobileOnly
+      if isMobile
+        @$('aside.active').addClass('hidden')
+      else
+        @model.set('currentAside', null)
 
-  liveChangeEnd: =>
-    if $(window).width() <= 768
-      @$('aside.active').removeClass('hidden')
-      @subviews.headup.deactivate()
+      @subviews.headup.activate(control)
+
+  hideHeadup: =>
+    @$('aside.active').removeClass('hidden')
+    @subviews.headup.deactivate()
 
   setActive: (active) =>
     @$el.toggleClass('active', active)
