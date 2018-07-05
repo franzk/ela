@@ -44,7 +44,7 @@ class Backbone.Poised.Textfield extends Backbone.View
         else
           value = @model.get(@attribute)
 
-      if @options.precision
+      if @options.precision?
         valueString = value.toFixed(@options.precision)
 
     @$input.val(valueString or value)
