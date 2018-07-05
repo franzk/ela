@@ -11,6 +11,7 @@ class ELA.Views.Canvas extends Backbone.Poised.View
     super
     fontWeight = if window.devicePixelRatio > 1 then 300 else 400
     @defaultFont = "#{fontWeight} 12px Roboto"
+    @largeBoldFont = "#{fontWeight * 2} 20px Roboto"
 
   initialize: (options = {}) ->
     # Make sure we got the parameters model for holding view specific
