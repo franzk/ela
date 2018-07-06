@@ -3,17 +3,20 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
   className: 'axis-handler'
 
   events:
-    'pan': 'updateValue'
-    'tap': 'updateValue'
+    'pan': 'handlePan'
+    'tap': 'handleTap'
+    'press': 'showInputField'
+    'pressup': 'focusInputField'
+    'tap input': 'handleInputTap'
 
   hammerjs:
     recognizers: [
       [Hammer.Rotate, { enable: false }],
       [Hammer.Pinch, { enable: false }, ['rotate']],
       [Hammer.Swipe, { enable: false }],
-      [Hammer.Pan, { direction: Hammer.DIRECTION_ALL, threshold: 1 }, ['swipe']],
+      [Hammer.Pan, { direction: Hammer.DIRECTION_ALL, threshold: 10 }, ['swipe']],
       [Hammer.Tap, { threshold: 5 }],
-      [Hammer.Press, { enable: false }]
+      [Hammer.Press]
     ]
 
   initialize: (options) ->
@@ -35,7 +38,24 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
     @minValue ?= options.minValue
     @minValue ?= options.range?[1]
 
-    @listenTo @model, "change:#{@attribute}", @renderText
+    @listenTo(@model, "change:#{@attribute}", @renderSpan)
+
+    @subviews = {}
+    @formSettings = @model.loadSettings("formFields")[@attribute]
+    @params = new Backbone.Model
+      showInput: false
+    @listenTo(@params, 'change:showInput', @renderSpan)
+
+    @lastFocusOutAt = undefined
+
+  handleTap: (e) =>
+    @updateValue(e) unless @hasRecentlyOpenInput()
+
+  handlePan: (e) =>
+    @updateValue(e) unless @params.get('showInput')
+
+  handleInputTap: (e) =>
+    e.stopPropagation()
 
   updateValue: (e) =>
     origin = @displayParams.get("#{@orientation}Origin")
@@ -57,16 +77,57 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
     point = Math.min(point, @maxValue) if isFinite(@maxValue)
     @model.set(@attribute, point)
 
-  renderText: =>
-    @$el.find('span').text(t(
+  showInputField: ->
+    @params.set(showInput: true)
+
+  focusInputField: =>
+    _.defer => @subviews.inputControl?.$('input').focus()
+
+  closeInputField: =>
+    @params.set(showInput: false)
+
+  hasRecentlyOpenInput: ->
+    # not (new Date - @lastFocusOutAt < 100) and (new Date - @lastFocusOutAt > 100)
+    # are not equal when @lastFocusOutAt is undefined!
+    @params.get('showInput') or (new Date - @lastFocusOutAt < 100)
+
+  handleFocusOut: =>
+    @lastFocusOutAt = new Date
+    @closeInputField()
+
+  text: (value) =>
+    t(
       "#{@model.name}.axisHandler.#{@attribute}.label"
       "#{@model.name}.axisHandler.label"
       'axisHandler.label'
-      value: @model.get(@attribute).toFixed(@precision)
-    ))
+      value: "<span></span>"
+    )
+
+  renderSpan: =>
+    if @params.get('showInput')
+      @$label.addClass('has-input')
+      control = new Backbone.Poised.Textfield(
+        _.defaults(
+          model: @model
+          attribute: @attribute
+          type: 'number'
+        ,
+          @formSettings
+        )
+      )
+      @subviews.inputControl = control
+      @listenToOnce(control, 'changeValue', @handleFocusOut)
+      @$label.find('span').html(control.render().el)
+    else
+      @$label.removeClass('has-input')
+      @$label.find('span').text(
+        @model.get(@attribute).toFixed(@precision) + ' ' + @formSettings.unit
+      )
 
   render: =>
-    @$el.html('<span class="hint"></span>')
+    delete @subviews.inputField
+    @$label = $('<label>').html(@text())
+    @renderSpan()
+    @$el.html(@$label)
     @$el.addClass("axis-handler-#{@position}")
-    @renderText()
     this

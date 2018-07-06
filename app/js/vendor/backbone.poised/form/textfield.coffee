@@ -65,6 +65,7 @@ class Backbone.Poised.Textfield extends Backbone.View
 
   readInput: =>
     @_updateValue(@$input.val())
+    @trigger('changeValue')
 
   clearInputValue: =>
     @$input.val('') if @options.clearOnFocus

@@ -120,9 +120,13 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         params: @displayParams
         localePrefix: @localePrefix
       if @leftAxisHandler?
-        view.$el.on('tap', @subviews.leftAxisHandler.updateValue)
+        view.$el.on 'tap', (e) =>
+          unless @subviews.bottomAxisHandler?.hasRecentlyOpenInput()
+            @subviews.leftAxisHandler.handleTap(e)
       if @bottomAxisHandler?
-        view.$el.on('tap', @subviews.bottomAxisHandler.updateValue)
+        view.$el.on 'tap', (e) =>
+          unless @subviews.leftAxisHandler?.hasRecentlyOpenInput()
+            @subviews.bottomAxisHandler.handleTap(e)
       $graph.html(view.render().el)
 
     this
