@@ -19,6 +19,4 @@
           - if @hasHelpText
             %li.help= t('contextMenu.help')
   .viewport
-  %a#upstream{ href: ELA.settings.upstream.url, target: '_blank' }
-    %img{ src: 'images/logo.png' }
   %aside.right.headup

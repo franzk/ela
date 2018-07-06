@@ -1,6 +1,8 @@
 ELA.Views ?= {}
 
 class ELA.Views.GraphView extends ELA.Views.ViewportView
+  className: "#{ELA.Views.ViewportView::className} graph-view"
+
   initialize: (options = {}) ->
     unless options.name?
       throw 'ELA.Views.GraphView: option `name` is required'
@@ -63,7 +65,7 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
     @subviews = {}
 
   render: =>
-    @$el.empty()
+    super
 
     if @LegendView?
       view = @subviews.legend ?= new @LegendView
@@ -94,7 +96,10 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         localePrefix: @localePrefix
       $horizontalWrapper.append(view.render().el)
 
-    $horizontalWrapper.append($('<div>', class: 'graph'))
+    $graph = $('<div>', class: 'graph')
+    $a = $('<a>', id: 'upstream', href: ELA.settings.upstream.url, target: '_blank')
+    $a.html($('<img>', src: 'images/logo.png'))
+    $horizontalWrapper.append($graph.html($a))
     @$el.append($horizontalWrapper)
 
     if @bottomAxisHandler?
@@ -108,7 +113,6 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
       @$el.append(view.render().el)
 
     delay =>
-      $graph = @$('.graph')
       @subviews.graph?.remove()
       # Taken from ELA.Views.Canvas::readCanvasResolution
       @displayParams.set
@@ -127,6 +131,6 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         view.$el.on 'tap', (e) =>
           unless @subviews.leftAxisHandler?.hasRecentlyOpenInput()
             @subviews.bottomAxisHandler.handleTap(e)
-      $graph.html(view.render().el)
+      $graph.append(view.render().el)
 
     this

@@ -121,12 +121,31 @@ article.viewport
     border-right 1px solid #bbb
     overflow hidden
 
-    &:last-child
-      border-right: none
+    a#upstream
+      display none
+
+      img
+        absolute none 0 0 none
+        height $axis-handler-size
+        z-layer 'section', 'graph'
+        opacity 0.4
+        transition opacity 100ms
+
+        &:hover
+          opacity 1
+
+      @media $media-lt-phone
+        pointer-events none
 
     .horizontal-wrapper
       display flex
       flex 1
+
+    &:last-child
+      border-right: none
+
+      a#upstream
+        display block
 
   div.legend
     z-layer 'section', 'legend'
@@ -371,18 +390,6 @@ aside.curves
       font-family FontAwesome
       content "\f05a"
       margin-right 0.4em
-
-a#upstream
-  img
-    absolute none 0 0 none
-    height $axis-handler-size
-    z-layer 'section', 'graph'
-
-  @media $media-lt-phone
-    pointer-events none
-
-    img
-      opacity 0.4
 
 span.mark
   background-color yellow
