@@ -6,6 +6,7 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
     'pan': 'handlePan'
     'tap': 'handleTap'
     'press': 'showInputField'
+    'doubletap': 'showInputField'
     'pressup': 'focusInputField'
     'tap input': 'handleInputTap'
 
@@ -16,6 +17,7 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
       [Hammer.Swipe, { enable: false }],
       [Hammer.Pan, { direction: Hammer.DIRECTION_ALL, threshold: 10 }, ['swipe']],
       [Hammer.Tap, { threshold: 5 }],
+      [Hammer.Tap, { event: 'doubletap', taps: 2, posThreshold: 20, threshold: 5 }, ['tap']],
       [Hammer.Press]
     ]
 
