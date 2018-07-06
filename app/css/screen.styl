@@ -121,12 +121,31 @@ article.viewport
     border-right 1px solid #bbb
     overflow hidden
 
-    &:last-child
-      border-right: none
+    a#upstream
+      display none
+
+      img
+        absolute none 0 0 none
+        height $axis-handler-size
+        z-layer 'section', 'graph'
+        opacity 0.4
+        transition opacity 100ms
+
+        &:hover
+          opacity 1
+
+      @media $media-lt-phone
+        pointer-events none
 
     .horizontal-wrapper
       display flex
       flex 1
+
+    &:last-child
+      border-right: none
+
+      a#upstream
+        display block
 
   div.legend
     z-layer 'section', 'legend'
@@ -219,6 +238,9 @@ article.viewport
     overflow hidden
     position relative
 
+    canvas
+      display block
+
   div.graph-overlay-wrapper
     height 0
     font-size .75em
@@ -230,18 +252,29 @@ article.viewport
 
   div.axis-handler
     text-align center
-    cursor pointer
     background $legend-background
-    padding 14px 5px
+
+    label
+      padding 14px 5px
+      display block
+      cursor pointer
+
+      &.has-input
+        padding 7.5px 5px
+        cursor inherit
+
+    .poised.textfield
+      display inline-block
+      width 140px
 
     &.axis-handler-left
       width $axis-handler-size
+      white-space nowrap
       position relative
 
-      span.hint
+      label
         absolute 50% none none 50%
         transform translateX(-50%) translateY(-50%) rotate(-90deg)
-        width 500px // ugly, but no alternative
 
 // vertical range slider and large, non-transparent legend with values
 #international-standard-atmosphere article.graph div.graph
@@ -357,14 +390,6 @@ aside.curves
       font-family FontAwesome
       content "\f05a"
       margin-right 0.4em
-
-img.logo
-  absolute none 0 0 none
-  height $axis-handler-size
-  z-layer 'section', 'graph'
-
-  @media $media-lt-phone
-    display none
 
 span.mark
   background-color yellow

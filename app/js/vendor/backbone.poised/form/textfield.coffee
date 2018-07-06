@@ -4,6 +4,7 @@ class Backbone.Poised.Textfield extends Backbone.View
   events:
     'focusin input': 'clearInputValue'
     'focusout input': 'readInput'
+    'keyup input': 'handleKeyUp'
 
   initialize: (options = {}) =>
     throw new Error('Missing `model` option') unless options.model?
@@ -44,7 +45,7 @@ class Backbone.Poised.Textfield extends Backbone.View
         else
           value = @model.get(@attribute)
 
-      if @options.precision
+      if @options.precision?
         valueString = value.toFixed(@options.precision)
 
     @$input.val(valueString or value)
@@ -59,8 +60,12 @@ class Backbone.Poised.Textfield extends Backbone.View
     return if @$input.is(':focus')
     @_updateValue(undefined, updateModel: false)
 
+  handleKeyUp: (e) =>
+    @readInput() if e.keyCode == 13
+
   readInput: =>
     @_updateValue(@$input.val())
+    @trigger('changeValue')
 
   clearInputValue: =>
     @$input.val('') if @options.clearOnFocus

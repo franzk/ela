@@ -8,7 +8,7 @@ class ELA.Views.Headup extends Backbone.Poised.View
 
   deactivate: =>
     @$el.removeClass('active')
-    @subviews.control.remove()
+    @subviews.control?.remove()
 
   render: =>
     @$el.html(@subviews.control.render().el)

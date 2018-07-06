@@ -1,6 +1,8 @@
 ELA.Views ?= {}
 
 class ELA.Views.ChartView extends ELA.Views.ViewportView
+  className: 'view chart-view'
+
   initialize: (options = {}) ->
     unless options.name?
       throw 'ELA.Views.GraphView: option `name` is required'
