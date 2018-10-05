@@ -3,8 +3,8 @@ class ELA.Models.GraphParams extends ELA.Models.CanvasParams
   defaults:
     xScale: 1.1 # display 10% more than the configured xRange
     yScale: 1.1 # display 10% more than the configured yRange
-    xOrigin: 30
-    yOrigin: 0
+    xOrigin: 8 + 12 + 8
+    yOrigin: 8 + 12 + 8
     xOriginAnchor: 'left'
     yOriginAnchor: 'bottom'
     xOriginRatio: null
