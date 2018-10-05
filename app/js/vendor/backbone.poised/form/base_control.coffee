@@ -1,5 +1,5 @@
 class Backbone.Poised.BaseControl extends Backbone.Poised.View
-  template: _.template('<div class="info"><label><%= label %></label><div class="hint"></div></div>')
+  template: _.template('<div class="info"><label><%= label %></label><div class="hint"></div><div class="input"></div></div>')
 
   initialize: (options = {}) =>
     @initOptions   = options
@@ -35,7 +35,7 @@ class Backbone.Poised.BaseControl extends Backbone.Poised.View
     @$el.html @template
       label: @label or @loadLocale "formFields.#{@attribute}.label",
         defaultValue: @attribute.toLabel()
-    @$info = @$el.find('.info')
+    @$input = @$el.find('.input')
     this
 
   clone: (options = {}) =>

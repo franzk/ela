@@ -37,10 +37,10 @@ class Backbone.Poised.RangeControl extends Backbone.Poised.BaseControl
 
     if @options.renderSpinner
       @subviews.spinner = new Backbone.Poised.Textfield(@spinnerOptions)
-      @$info.append(@subviews.spinner.render().el)
+      @$input.html(@subviews.spinner.render().el)
     else
       @subviews.value = new Backbone.Poised.Value(@options)
-      @$info.append(@subviews.value.render().el)
+      @$input.html(@subviews.value.render().el)
 
     @subviews.slider = new Backbone.Poised.Slider(@sliderOptions)
     @$el.append(@subviews.slider.render().el)

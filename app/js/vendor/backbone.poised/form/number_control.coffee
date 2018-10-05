@@ -20,6 +20,6 @@ class Backbone.Poised.NumberControl extends Backbone.Poised.BaseControl
     super
 
     @subviews.spinner = new Backbone.Poised.Textfield(@options)
-    @$info.append(@subviews.spinner.render().el)
+    @$input.html(@subviews.spinner.render().el)
 
     this
