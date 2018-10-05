@@ -12,6 +12,15 @@ class Backbone.Poised.BaseControl extends Backbone.Poised.View
 
     @options = _.omit(options, 'el')
 
+    @visibilityParameters = if @options.visibility
+      @options.visibility.slice(0)
+    else
+      []
+    @visibilityCallback = @visibilityParameters.pop()
+
+    for p in @visibilityParameters
+      @model.on("change:#{p}", @renderVisibility)
+
     if @options.validate
       @model.on 'validated', @hintValidation
 
@@ -31,6 +40,7 @@ class Backbone.Poised.BaseControl extends Backbone.Poised.View
     @lastErrors = errors
 
   render: =>
+    @renderVisibility()
     @$el.attr('class', "poised control #{@attribute}")
     @$el.html @template
       label: @label or @loadLocale "formFields.#{@attribute}.label",
@@ -40,3 +50,9 @@ class Backbone.Poised.BaseControl extends Backbone.Poised.View
 
   clone: (options = {}) =>
     new this.__proto__.constructor(_.defaults(options, @initOptions))
+
+  renderVisibility: =>
+    return unless @visibilityCallback
+    parameters = (@model.get(p) for p in @visibilityParameters)
+    isVisible = @visibilityCallback.call(parameters)
+    @$el.toggleClass('hidden', !isVisible)
