@@ -10,6 +10,6 @@ class Backbone.Poised.ValueControl extends Backbone.Poised.BaseControl
     super
 
     @subviews.value = view = new Backbone.Poised.Value(@options)
-    @$info.append(view.render().el)
+    @$input.html(view.render().el)
 
     this

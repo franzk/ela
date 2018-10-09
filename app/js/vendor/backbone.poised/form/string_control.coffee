@@ -18,6 +18,6 @@ class Backbone.Poised.StringControl extends Backbone.Poised.BaseControl
       @$el.append(@subviews.textarea.render().el)
     else
       @subviews.textfield = new Backbone.Poised.Textfield(@options)
-      @$info.append(@subviews.textfield.render().el)
+      @$input.html(@subviews.textfield.render().el)
 
     this

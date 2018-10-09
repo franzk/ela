@@ -11,6 +11,6 @@ class Backbone.Poised.SelectControl extends Backbone.Poised.BaseControl
     super
 
     @subviews.selectbox = new Backbone.Poised.Selectbox(@options)
-    @$info.append(@subviews.selectbox.render().el)
+    @$input.html(@subviews.selectbox.render().el)
 
     this

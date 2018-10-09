@@ -1,5 +1,5 @@
 class Backbone.Poised.BaseControl extends Backbone.Poised.View
-  template: _.template('<div class="info"><label><%= label %></label><div class="hint"></div></div>')
+  template: _.template('<div class="info"><label><%= label %></label><div class="hint"></div><div class="input"></div></div>')
 
   initialize: (options = {}) =>
     @initOptions   = options
@@ -11,6 +11,15 @@ class Backbone.Poised.BaseControl extends Backbone.Poised.View
     @label = options.label
 
     @options = _.omit(options, 'el')
+
+    @visibilityParameters = if @options.visibility
+      @options.visibility.slice(0)
+    else
+      []
+    @visibilityCallback = @visibilityParameters.pop()
+
+    for p in @visibilityParameters
+      @model.on("change:#{p}", @renderVisibility)
 
     if @options.validate
       @model.on 'validated', @hintValidation
@@ -31,12 +40,19 @@ class Backbone.Poised.BaseControl extends Backbone.Poised.View
     @lastErrors = errors
 
   render: =>
+    @renderVisibility()
     @$el.attr('class', "poised control #{@attribute}")
     @$el.html @template
       label: @label or @loadLocale "formFields.#{@attribute}.label",
         defaultValue: @attribute.toLabel()
-    @$info = @$el.find('.info')
+    @$input = @$el.find('.input')
     this
 
   clone: (options = {}) =>
     new this.__proto__.constructor(_.defaults(options, @initOptions))
+
+  renderVisibility: =>
+    return unless @visibilityCallback
+    parameters = (@model.get(p) for p in @visibilityParameters)
+    isVisible = @visibilityCallback.call(parameters)
+    @$el.toggleClass('hidden', !isVisible)
