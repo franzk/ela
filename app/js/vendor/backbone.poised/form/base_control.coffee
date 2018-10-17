@@ -40,8 +40,8 @@ class Backbone.Poised.BaseControl extends Backbone.Poised.View
     @lastErrors = errors
 
   render: =>
-    @renderVisibility()
     @$el.attr('class', "poised control #{@attribute}")
+    @renderVisibility()
     @$el.html @template
       label: @label or @loadLocale "formFields.#{@attribute}.label",
         defaultValue: @attribute.toLabel()
