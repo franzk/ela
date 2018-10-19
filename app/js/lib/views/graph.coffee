@@ -264,7 +264,7 @@ class ELA.Views.Graph extends ELA.Views.Canvas
     else
       @xOrigin/2
     xPos = Math.round(xPos) if @context.pixelRatio is 1
-    @context.translate(xPos, yPos + 8)
+    @context.translate(xPos, yPos + 15)
     MarkupText.render(@context, @xAxisLabel(), @defaultFont)
     @context.restore()
 
@@ -312,7 +312,7 @@ class ELA.Views.Graph extends ELA.Views.Canvas
     else
       @yOrigin/2
     yPos = Math.round(yPos) if @context.pixelRatio is 1
-    @context.translate(xPos - 8 - 12, yPos);
+    @context.translate(xPos - 15, yPos);
     @context.rotate(-Math.PI / 2);
     MarkupText.render(@context, @yAxisLabel(), @defaultFont)
     @context.restore()

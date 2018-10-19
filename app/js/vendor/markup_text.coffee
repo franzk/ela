@@ -18,7 +18,7 @@ class @MarkupText
       when 'alphabetic' then boundingBox.maxY
       when 'top' then boundingBox.y
       when 'hanging' then boundingBox.y
-      when 'middle' then Math.floor(boundingBox.h / 2)
+      when 'middle' then boundingBox.y + Math.floor(boundingBox.h / 2)
       when 'ideographic' then boundingBox.maxY
       when 'bottom' then boundingBox.maxY
       else 0
