@@ -24,6 +24,7 @@ class @MarkupText
       else 0
     context.scale(1 / context.pixelRatio, 1 / context.pixelRatio)
     context.drawImage(tempCanvas, -x, -y)
+    boundingBox
 
   constructor: (markup) ->
     @markup = markup
