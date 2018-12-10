@@ -122,9 +122,10 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
       @$label.find('span').html(control.render().el)
     else
       @$label.removeClass('has-input')
-      @$label.find('span').text(
-        @model.get(@attribute).toFixed(@precision) + ' ' + @formSettings.unit
-      )
+      text = @model.get(@attribute).toFixed(@precision)
+      if @formSettings?.unit?.length > 0
+        text += ' ' + @formSettings.unit
+      @$label.find('span').text(text)
 
   render: =>
     delete @subviews.inputField
