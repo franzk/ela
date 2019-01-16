@@ -18,11 +18,13 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
     if options.graphOverlay?.view?
       @GraphOverlayView = options.graphOverlay.view.toFunction()
 
-    if options.graph?.axes?.x?.y?
-      @xAxis = _.pick(options.graph.axes.x, 'y')
-
-    if options.graph?.axes?.y?.x?
-      @yAxis = _.pick(options.graph.axes.y, 'x')
+    if options.graph?.axes?
+      if options.graph.axes.x?
+        @xAxisY = options.graph.axes.x.y
+        @xAxisScale = options.graph.axes.x.scale
+      if options.graph.axes.y?
+        @yAxisX = options.graph.axes.y.x
+        @yAxisScale = options.graph.axes.y.scale
 
     for axis, props of options.graph?.axes
       if props.handler
@@ -54,8 +56,10 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
       guides: @guides
       curves: @curves
       axisLabelingForCurve: @axisLabelingForCurve
-      xAxis: @xAxis
-      yAxis: @yAxis
+      xAxisY: @xAxisY
+      xAxisScale: @xAxisScale
+      yAxisX: @yAxisX
+      yAxisScale: @yAxisScale
       app: @model
       xOrigin: options.graph?.xOrigin
       yOrigin: options.graph?.yOrigin

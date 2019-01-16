@@ -190,7 +190,14 @@ class ELA.Views.Graph extends ELA.Views.Canvas
     value.toFixed(precision)
 
   xAxisValueLabel: (val, stepsize) ->
-    @axisLabel(val, stepsize)
+    str = @axisLabel(val, stepsize)
+    switch @xAxisScale.type
+      when 'linear' then str
+      when 'logarithmic'
+        if val is 1
+          @xAxisScale.base
+        else
+          "#{@xAxisScale.base}^#{str}"
 
   yAxisValueLabel: (val, stepsize) ->
     curve = @params.get('axisLabelingForCurve')
@@ -545,13 +552,15 @@ class ELA.Views.Graph extends ELA.Views.Canvas
     @context.closePath()
 
   render: =>
-    @width = @params.get('width')
-    @height = @params.get('height')
-    @xOrigin = @params.get('xOrigin')
-    @yOrigin = @params.get('yOrigin')
-    @yOffset = @params.get('yOffset')
-    @xRange = @params.get('xRange')
-    @yRange = @params.get('yRange')
+    @width      = @params.get('width')
+    @height     = @params.get('height')
+    @xOrigin    = @params.get('xOrigin')
+    @yOrigin    = @params.get('yOrigin')
+    @yOffset    = @params.get('yOffset')
+    @xRange     = @params.get('xRange')
+    @yRange     = @params.get('yRange')
+    @xAxisScale = @params.get('xAxisScale')
+    @yAxisScale = @params.get('yAxisScale')
 
     @xMin = -@xOrigin * @xRange / @width
     @xMax = (@width - @xOrigin) * @xRange / @width
@@ -567,16 +576,16 @@ class ELA.Views.Graph extends ELA.Views.Canvas
     @beforeRender()
 
     @renderGrid()
-    xAxis = @params.get('xAxis')
-    if $.isArray(xAxis.y)
-      @renderXAxis(y) for y in xAxis.y
+    xAxisY = @params.get('xAxisY')
+    if $.isArray(xAxisY)
+      @renderXAxis(y) for y in xAxisY
     else
-      @renderXAxis(xAxis.y)
-    yAxis = @params.get('yAxis')
-    if $.isArray(yAxis.x)
-      @renderYAxis(x) for x in yAxis.x
+      @renderXAxis(xAxisY)
+    yAxisX = @params.get('yAxisX')
+    if $.isArray(yAxisX)
+      @renderYAxis(x) for x in yAxisX
     else
-      @renderYAxis(yAxis.x)
+      @renderYAxis(yAxisX)
     @renderCurves()
     
     for guide in @params.get('guides')
