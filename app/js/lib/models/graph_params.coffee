@@ -18,8 +18,10 @@ class ELA.Models.GraphParams extends ELA.Models.CanvasParams
     xPinchLocked: false
     yPinchLocked: false
     scaleLink: false
-    xAxis: { y: 0 }
-    yAxis: { x: 0 }
+    xAxisY: 0
+    xAxisScale: { type: 'linear' }
+    yAxisX: 0
+    yAxisScale: { type: 'linear' } # not implemented yet
 
   constructor: ->
     super
