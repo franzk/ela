@@ -12,13 +12,10 @@ class ELA.Views.AxisHandler extends Backbone.Poised.View
 
   hammerjs:
     recognizers: [
-      [Hammer.Rotate, { enable: false }],
-      [Hammer.Pinch, { enable: false }, ['rotate']],
-      [Hammer.Swipe, { enable: false }],
-      [Hammer.Pan, { direction: Hammer.DIRECTION_ALL, threshold: 10 }, ['swipe']],
-      [Hammer.Tap, { threshold: 5 }],
-      [Hammer.Tap, { event: 'doubletap', taps: 2, posThreshold: 20, threshold: 5 }, ['tap']],
-      [Hammer.Press]
+      [ Hammer.Pan, direction: Hammer.DIRECTION_ALL, threshold: 1 ],
+      [ Hammer.Tap, threshold: 1 ],
+      [ Hammer.Tap, event: 'doubletap', taps: 2, posThreshold: 20, threshold: 1, ['tap'] ],
+      [ Hammer.Press, threshold: 1 ]
     ]
 
   initialize: (options) ->
