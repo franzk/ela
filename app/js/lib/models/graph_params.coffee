@@ -45,11 +45,30 @@ class ELA.Models.GraphParams extends ELA.Models.CanvasParams
     @on('change:yScale', @calculateRanges)
 
     @calculateRanges()
+    @ensureCurveForAxisLabeling(initialCall: true)
     @bindCalculatorEvents()
     @listenTo(@app.curves, 'change:selected', @bindCalculatorEvents)
+    @listenTo(@app.curves, 'historyRemove historyReset', @ensureCurveForAxisLabeling)
+    @listenTo @app.curves, 'historyAdd', ->
+      @ensureCurveForAxisLabeling(reset: true)
     @listenTo @app, 'change:calculators', ->
       @calculateRanges()
       @bindCalculatorEvents()
+
+  ensureCurveForAxisLabeling: (options = {}) ->
+    currentAxisLabelingCurve = @get('axisLabelingForCurve')
+    curves = @filteredCurves()
+
+    if curves.indexOf(currentAxisLabelingCurve) < 0 or options.reset
+      if curves.length > 0
+        newLabelCurve = if options.initialCall
+          # First curve in legend
+          curves[0]
+        else
+          # Curve that has been selected recently (last curve in legend)
+          curves[curves.length - 1]
+
+      @set(axisLabelingForCurve: newLabelCurve)
 
   bindCalculatorEvents: ->
     # Remove current callbacks, add new ones for each curve
@@ -65,6 +84,8 @@ class ELA.Models.GraphParams extends ELA.Models.CanvasParams
       @listenTo(calc, 'change:maxY change:yRange', @calculateRangeY)
       # TODO: Add dynamic dependencies to calculator, so that we can
       # actually only listen to maxY changes and recalculate ranges.
+      # TODO: is this block required?! change:xRange and change:yRange
+      # above should be enough.
       oldestCurve = filteredCurves[0]
       if oldestCurve?
         @listenTo(calc,
