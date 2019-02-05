@@ -41,12 +41,7 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
         orientation: 'horizontal'
         attribute: @leftAxisHandler.attribute
 
-    if options.graph?.curves?
-      @curves = options.graph.curves.slice()
-      @axisLabelingForCurve = @model.curves.find (curve) =>
-        curve.get('function') is @curves[0]
-    else
-      @axisLabelingForCurve = @model.curves.first()
+    @curves = options.graph.curves.slice() if options.graph?.curves?
 
     if options.graph?.view
       @GraphView = options.graph.view.toFunction()
@@ -55,7 +50,6 @@ class ELA.Views.GraphView extends ELA.Views.ViewportView
     @displayParams = @model.displayParams[options.name] ?= new @GraphView.Params
       guides: @guides
       curves: @curves
-      axisLabelingForCurve: @axisLabelingForCurve
       xAxisY: @xAxisY
       xAxisScale: @xAxisScale
       yAxisX: @yAxisX

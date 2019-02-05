@@ -56,7 +56,7 @@ class ELA.Collections.LimitedCollection extends Backbone.Collection
   removeFromHistory: (model) ->
     while @inHistory(model)
       @history.splice(@history.indexOf(model), 1)
-      @trigger('historyChange')
+      @trigger('historyRemove')
 
   # Rebuilds history leaving old history entries untouched. Entries
   # are being added in collection order.
@@ -66,7 +66,7 @@ class ELA.Collections.LimitedCollection extends Backbone.Collection
     @each (model) =>
       @manageHistory(model, silent: true)
     unless _.isEqual(oldHistory, @history)
-      @trigger('historyChange')
+      @trigger('historyReset')
 
   # Whenever a model is changing its `activeState` the history is
   # checked. If the model is `activated` and the history is at its
@@ -79,7 +79,7 @@ class ELA.Collections.LimitedCollection extends Backbone.Collection
         while @atLimit()
           @history.shift().set(@attribute, not @activeState)
         @history.push(model)
-        @trigger('historyChange') unless options.silent
+        @trigger('historyAdd') unless options.silent
     else
       @removeFromHistory(model)
     this
