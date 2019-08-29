@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "ela/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "ela"
+  spec.name          = "ela.js"
   spec.version       = ELA::VERSION
   spec.authors       = ["Franz Kißig"]
-  spec.email         = ["fkissig@velalu.qa"]
+  spec.email         = ["franz@i-kugel.de"]
 
   spec.summary       = %q{HTML5 E-Learning Framework}
-  spec.homepage      = "https://github.com/velaluqa/ela.js"
+  spec.homepage      = "https://github.com/franzk/ela.js"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

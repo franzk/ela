@@ -11,7 +11,7 @@ available [in German](README.de.md).
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ela'
+gem 'ela.js', require: 'ela'
 ```
 
 And then execute:
@@ -20,7 +20,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install ela
+    $ gem install ela.js
 
 ## Usage
 
