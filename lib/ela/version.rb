@@ -1,3 +1,3 @@
 module ELA
-  VERSION = '4.1.6'
+  VERSION = '5.0.0'
 end

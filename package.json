@@ -1,6 +1,6 @@
 {
-  "name": "ela",
-  "repository": "velaluqa/ela.js",
+  "name": "ela.js",
+  "repository": "franzk/ela.js",
   "license": "MIT",
   "devDependencies": {
     "codo": "^2.1.2",
